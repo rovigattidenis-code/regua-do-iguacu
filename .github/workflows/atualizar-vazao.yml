@@ -1,0 +1,41 @@
+name: Atualizar vazao
+
+on:
+  schedule:
+    # A cada hora, aos 25 minutos: a ANA costuma publicar a leitura por volta dos 15.
+    - cron: "25 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: atualizar-vazao
+  cancel-in-progress: false
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Buscar dados na ANA
+        env:
+          ANA_IDENTIFICADOR: ${{ secrets.ANA_IDENTIFICADOR }}
+          ANA_SENHA: ${{ secrets.ANA_SENHA }}
+        run: python ana_vazao.py
+
+      - name: Publicar vazao.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add vazao.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Atualiza dados de vazao"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push

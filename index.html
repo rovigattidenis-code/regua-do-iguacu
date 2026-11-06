@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Régua do Iguaçu</title>
+<meta name="description" content="Vazão do Rio Iguaçu na estação Hotel Cataratas, comparada com a média.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --nevoa: #e6edea;
+    --tinta: #13362d;
+    --tinta-2: #40594f;
+    --linha: #b9c9c3;
+    --agua: #8b4a26;
+    --esmalte: #fbfcfb;
+    --traco: #13362d;
+    --alerta: #f1c232;
+    --alerta-tinta: #2b2100;
+    --critico: #a3261c;
+    --critico-tinta: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --nevoa: #0f2621;
+      --tinta: #e6edea;
+      --tinta-2: #a9bdb6;
+      --linha: #2e4a42;
+      --agua: #c47c4e;
+      --esmalte: #e6edea;
+      --critico: #e8857a;
+      --critico-tinta: #2a0b08;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --nevoa: #0f2621;
+    --tinta: #e6edea;
+    --tinta-2: #a9bdb6;
+    --linha: #2e4a42;
+    --agua: #c47c4e;
+    --esmalte: #e6edea;
+    --critico: #e8857a;
+    --critico-tinta: #2a0b08;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--nevoa);
+    color: var(--tinta);
+    font: 400 1.0625rem/1.5 Barlow, system-ui, sans-serif;
+  }
+  main { max-width: 960px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1, h2 { font-family: "Barlow Condensed", Barlow, system-ui, sans-serif; font-weight: 600; margin: 0; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--agua); outline-offset: 3px; }
+
+  .topo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 132px;
+    gap: 16px;
+    align-items: stretch;
+  }
+  @media (min-width: 720px) {
+    .topo { grid-template-columns: minmax(0, 1fr) 200px; gap: 48px; }
+    main { padding-top: 56px; }
+  }
+  .leitura { display: flex; flex-direction: column; justify-content: flex-end; min-height: 400px; padding-bottom: 8px; }
+  h1 { font-size: clamp(2.5rem, 8.4vw, 5rem); line-height: 1.02; max-width: 13ch; text-wrap: balance; }
+  .medida { margin: 20px 0 0; font-size: 1.25rem; font-weight: 500; }
+  .tendencia { margin: 4px 0 0; color: var(--tinta-2); }
+  .aviso {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0 0;
+    padding: 10px 12px;
+    max-width: 52ch;
+    background: var(--alerta);
+    color: var(--alerta-tinta);
+    font-weight: 500;
+    line-height: 1.35;
+  }
+  .aviso svg { flex: none; margin-top: 2px; }
+  .aviso[hidden] { display: none; }
+
+  /* A regua: o elemento que da identidade a pagina */
+  .regua { position: relative; min-height: 400px; }
+  .regua .haste {
+    position: absolute;
+    top: 0; bottom: 0; left: 0;
+    width: 40px;
+    background: var(--esmalte);
+    overflow: hidden;
+  }
+  .regua .traco { position: absolute; left: 0; height: 2px; background: var(--traco); transform: translateY(1px); }
+  .regua .agua {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    background: var(--agua);
+    opacity: .88;
+    transform-origin: bottom;
+  }
+  .regua .agua.sobe { animation: subir 1.1s cubic-bezier(.2, .7, .2, 1); }
+  @keyframes subir { from { transform: scaleY(0); } }
+  .regua .marca {
+    position: absolute;
+    left: 48px;
+    transform: translateY(50%);
+    font-size: .875rem;
+    line-height: 1.1;
+    color: var(--tinta-2);
+    white-space: nowrap;
+  }
+  .regua .marca.ref { color: var(--tinta); font-weight: 600; }
+  @media (prefers-reduced-motion: reduce) { .regua .agua.sobe { animation: none; } }
+
+  section { margin-top: 48px; }
+  h2 { font-size: 1.75rem; line-height: 1.1; }
+  .apoio-grafico { margin: 4px 0 12px; color: var(--tinta-2); max-width: 70ch; }
+  .grafico { position: relative; }
+  .grafico svg { display: block; width: 100%; touch-action: pan-y; }
+  .grafico text { font: 400 13px Barlow, system-ui, sans-serif; fill: var(--tinta-2); }
+  .grafico text.ref { fill: var(--tinta); font-weight: 600; paint-order: stroke; stroke: var(--nevoa); stroke-width: 4px; }
+  .dica {
+    position: absolute;
+    top: 0; left: 0;
+    padding: 6px 10px;
+    background: var(--tinta);
+    color: var(--nevoa);
+    font-size: .9375rem;
+    line-height: 1.25;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .dica[hidden] { display: none; }
+
+  .numeros {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 24px;
+    margin: 40px 0 0;
+    padding: 20px 0 0;
+    border-top: 2px solid var(--tinta);
+  }
+  @media (min-width: 720px) { .numeros { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+  .numeros dt { color: var(--tinta-2); font-size: .9375rem; }
+  .numeros dd { margin: 2px 0 0; font: 600 1.625rem/1.15 "Barlow Condensed", Barlow, sans-serif; }
+  .numeros dd small { display: block; font: 400 .875rem/1.3 Barlow, sans-serif; color: var(--tinta-2); margin-top: 2px; }
+
+  details { margin-top: 24px; }
+  summary { cursor: pointer; font-weight: 500; padding: 8px 0; }
+  .rolagem { max-height: 340px; overflow-y: auto; }
+  table { width: 100%; max-width: 420px; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  caption { position: absolute; left: -9999px; }
+  th, td { text-align: left; padding: 5px 16px 5px 0; border-bottom: 1px solid var(--linha); }
+  th:last-child, td:last-child { text-align: right; padding-right: 0; }
+
+  .unidade { display: inline-flex; gap: 16px; margin: 10px 0 0; font-size: .9375rem; color: var(--tinta-2); flex-wrap: wrap; }
+  .unidade label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; min-height: 32px; }
+  .unidade input { accent-color: var(--agua); margin: 0; }
+  .registrar { align-self: flex-start; margin: 14px 0 0; font-weight: 600; }
+  .registrar[hidden] { display: none; }
+
+  .atracoes {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0 40px;
+    margin-top: 12px;
+    border-top: 2px solid var(--tinta);
+  }
+  @media (min-width: 720px) { .atracoes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .atracao { padding: 18px 0; border-bottom: 1px solid var(--linha); min-width: 0; }
+  .atracao .topo-a { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+  .atracao h3 { margin: 0; font: 600 1.5rem/1.1 "Barlow Condensed", Barlow, sans-serif; }
+  .atracao .sub { display: block; color: var(--tinta-2); font-size: .9375rem; }
+  .estado-a { flex: none; padding: 3px 8px; font-size: .875rem; font-weight: 600; white-space: nowrap; border: 1px solid var(--linha); }
+  .estado-a.atencao { background: var(--alerta); color: var(--alerta-tinta); border-color: var(--alerta); }
+  .estado-a.acima, .estado-a.fechado { background: var(--critico); color: var(--critico-tinta); border-color: var(--critico); }
+  .medidor { position: relative; height: 10px; margin: 12px 0 6px; background: var(--linha); }
+  .medidor i { position: absolute; inset: 0 auto 0 0; background: var(--agua); }
+  .numeros-a { display: flex; justify-content: space-between; gap: 12px; font-size: .9375rem; flex-wrap: wrap; }
+  .atracao p { margin: 8px 0 0; }
+  .atracao .nota-a { color: var(--tinta-2); font-size: .875rem; }
+
+  .barras { margin-top: 12px; border-top: 2px solid var(--tinta); }
+  .barra {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    width: 100%;
+    padding: 12px 8px;
+    border: 0;
+    border-bottom: 1px solid var(--linha);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+  }
+  button.barra { cursor: pointer; }
+  button.barra:hover { background: color-mix(in srgb, var(--linha) 45%, transparent); }
+  .barra.agora { background: color-mix(in srgb, var(--agua) 14%, transparent); }
+  .barra .nome b { display: block; font-weight: 600; }
+  .barra .nome span { color: var(--tinta-2); font-size: .875rem; }
+  .barra .trilho { position: relative; height: 12px; background: color-mix(in srgb, var(--linha) 55%, transparent); }
+  .barra .trilho i { position: absolute; inset: 0 auto 0 0; background: var(--tinta-2); }
+  .barra.limite .trilho i { background: var(--critico); }
+  .barra.agora .trilho i { background: var(--agua); }
+  .barra .valor small { display: block; color: var(--tinta-2); font-size: .875rem; }
+  @media (min-width: 720px) {
+    .barra { grid-template-columns: minmax(200px, 1.2fr) minmax(0, 2fr) 160px; gap: 16px; align-items: center; }
+    .barra .valor { text-align: right; }
+  }
+
+  .simulacao {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 5;
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 10px 16px;
+    background: var(--tinta);
+    color: var(--nevoa);
+    font-weight: 500;
+  }
+  .simulacao[hidden] { display: none; }
+  .simulacao button {
+    padding: 8px 12px;
+    border: 1px solid var(--nevoa);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .cabeca-relatos { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+  .filtro { display: inline-flex; gap: 14px; flex-wrap: wrap; color: var(--tinta-2); font-size: .9375rem; }
+  .filtro label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; min-height: 32px; }
+  .filtro input { accent-color: var(--agua); margin: 0; }
+  .relatos { list-style: none; margin: 12px 0 0; padding: 0; border-top: 2px solid var(--tinta); }
+  .relatos li { padding: 12px 0; border-bottom: 1px solid var(--linha); overflow-wrap: anywhere; }
+  .relatos b { font-weight: 600; }
+  .relatos .meta { display: block; color: var(--tinta-2); font-size: .875rem; }
+  .relatos .txt { display: block; }
+  .botao {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 10px 16px;
+    background: var(--tinta);
+    color: var(--nevoa);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .botao[hidden] { display: none; }
+
+  footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--linha); color: var(--tinta-2); font-size: .9375rem; max-width: 72ch; }
+  footer p { margin: 0 0 8px; }
+  .estado { color: var(--tinta-2); }
+</style>
+</head>
+<body>
+<main>
+  <div class="topo">
+    <div class="leitura">
+      <h1 id="manchete">Carregando a vazão do Iguaçu</h1>
+      <p class="medida" id="medida"></p>
+      <p class="tendencia" id="tendencia"></p>
+      <div class="unidade" role="radiogroup" aria-label="Unidade">
+        <label><input type="radio" name="unidade" value="m3" checked> m³/s</label>
+        <label><input type="radio" name="unidade" value="ml"> milhões de L/s</label>
+      </div>
+      <p class="aviso" id="aviso" role="status" hidden>
+        <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5 19 18H1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 7.5v5M10 14.5v1.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span id="aviso-texto"></span>
+      </p>
+      <a class="registrar" id="link-registrar" href="#ocorrencias" hidden>Registrar ocorrência</a>
+    </div>
+    <div class="regua" id="regua" role="img" aria-label="Régua da vazão"></div>
+  </div>
+
+  <section aria-labelledby="titulo-grafico">
+    <h2 id="titulo-grafico">Últimas 48 horas</h2>
+    <p class="apoio-grafico" id="apoio-grafico">Vazão em m³/s, leitura a leitura.</p>
+    <div class="grafico" id="grafico">
+      <svg id="grafico-svg" tabindex="0" role="img"></svg>
+      <div class="dica" id="dica" hidden></div>
+    </div>
+
+    <dl class="numeros">
+      <div><dt>Em litros</dt><dd id="n-litros"></dd></div>
+      <div><dt>Em piscinas olímpicas</dt><dd id="n-piscinas"></dd></div>
+      <div><dt>Velocidade</dt><dd id="n-taxa"></dd></div>
+      <div><dt>Nível do rio (cota)</dt><dd id="n-cota"></dd></div>
+      <div><dt>Qualidade da leitura</dt><dd id="n-qualidade"></dd></div>
+    </dl>
+
+    <details>
+      <summary>Ver todas as leituras</summary>
+      <div class="rolagem">
+        <table>
+          <caption>Leituras de vazão, da mais recente para a mais antiga</caption>
+          <thead><tr><th scope="col">Leitura</th><th scope="col">Vazão</th></tr></thead>
+          <tbody id="tabela"></tbody>
+        </table>
+      </div>
+    </details>
+  </section>
+
+  <section aria-labelledby="titulo-atracoes">
+    <h2 id="titulo-atracoes">Situação por atração</h2>
+    <p class="apoio-grafico">Calculada pela vazão e pelos relatos publicados. A projeção é linear, usa a variação recente e não considera chuva a montante.</p>
+    <div class="atracoes" id="atracoes"></div>
+  </section>
+
+  <section aria-labelledby="titulo-agua">
+    <h2 id="titulo-agua">Quanta água é esta?</h2>
+    <p class="apoio-grafico">A linha destacada é a leitura atual. Toque em outra linha para simular aquela vazão.</p>
+    <div class="barras" id="barras"></div>
+  </section>
+
+  <section id="ocorrencias" aria-labelledby="titulo-relatos" hidden>
+    <div class="cabeca-relatos">
+      <h2 id="titulo-relatos">Ocorrências relatadas</h2>
+      <div class="filtro" role="radiogroup" aria-label="Filtrar por lado">
+        <label><input type="radio" name="filtro" value="" checked> Todos</label>
+        <label><input type="radio" name="filtro" value="BR"> Brasil</label>
+        <label><input type="radio" name="filtro" value="AR"> Argentina</label>
+      </div>
+    </div>
+    <p class="apoio-grafico">Relatos de campo, publicados depois de revisados. Um fechamento relatado prevalece sobre o cálculo.</p>
+    <ul class="relatos" id="relatos"></ul>
+    <p class="estado" id="relatos-vazio" hidden></p>
+    <a class="botao" id="botao-registrar" target="_blank" rel="noopener" hidden>Registrar ocorrência</a>
+  </section>
+
+  <footer>
+    <p class="estado" id="estado"></p>
+    <p>Dados da ANA e da Copel, estação <span id="estacao">65992502</span>. Os limites vêm de comunicados das concessionárias e da imprensa, não são limites oficiais da ANA. Sem relato, a página calcula pela vazão e não sabe se uma atração está aberta. Confirme com o parque antes de decidir um passeio.</p>
+  </footer>
+</main>
+
+<div class="simulacao" id="simulacao" role="status" hidden>
+  <span id="simulacao-texto"></span>
+  <button type="button" id="voltar">Voltar à leitura real</button>
+</div>
+
+<script src="config.js"></script>
+<script src="painel.js"></script>
+<script>
+(function () {
+  const P = window.Painel;
+  const $ = (id) => document.getElementById(id);
+  const SVG = "http://www.w3.org/2000/svg";
+  const INTERVALO_MS = 10 * 60 * 1000;
+  let dados = null;
+  let reguaDesenhada = false;
+  let unidade = "m3";
+  let simulada = null;
+  let relatos = [];
+  let filtro = "";
+  const CONFIG = window.ReguaConfig || {};
+
+  function h(tag, classe, texto) {
+    const n = document.createElement(tag);
+    if (classe) n.className = classe;
+    if (texto != null) n.textContent = texto;
+    return n;
+  }
+
+  function el(tag, attrs, pai) {
+    const n = document.createElementNS(SVG, tag);
+    for (const k in attrs) n.setAttribute(k, attrs[k]);
+    if (pai) pai.appendChild(n);
+    return n;
+  }
+
+  function desenharRegua(v) {
+    const raiz = $("regua");
+    raiz.textContent = "";
+    raiz.setAttribute("aria-label", "Régua: vazão atual de " + P.num(v) + " metros cúbicos por segundo, média de 1.500");
+    const max = Math.max(12000, Math.ceil((v * 1.15) / 2000) * 2000);
+    const pct = (x) => (x / max) * 100;
+
+    const haste = document.createElement("div");
+    haste.className = "haste";
+    for (let x = 0; x <= max; x += 500) {
+      const t = document.createElement("div");
+      t.className = "traco";
+      t.style.bottom = pct(x) + "%";
+      t.style.width = x % 2000 === 0 ? "100%" : "50%";
+      haste.appendChild(t);
+    }
+    const agua = document.createElement("div");
+    agua.className = "agua";
+    haste.appendChild(agua);
+    raiz.appendChild(haste);
+
+    const refs = [[P.VAZAO_MEDIA, "média"], [P.VAZAO_PASSARELA, "passarela"]];
+    const passo = max > 16000 ? 4000 : 2000;
+    for (let x = 0; x <= max; x += passo) {
+      if (refs.some(([r]) => Math.abs(pct(r) - pct(x)) < 5)) continue;
+      marca(raiz, pct(x), P.num(x), false);
+    }
+    refs.forEach(([r, nome]) => marca(raiz, pct(r), P.num(r) + " " + nome, true));
+    // A agua sobe so na primeira carga; nas atualizacoes seguintes ela ja aparece no nivel.
+    agua.style.height = pct(v) + "%";
+    if (!reguaDesenhada) agua.classList.add("sobe");
+    reguaDesenhada = true;
+  }
+
+  function marca(raiz, bottom, texto, ref) {
+    const m = document.createElement("span");
+    m.className = ref ? "marca ref" : "marca";
+    m.style.bottom = bottom + "%";
+    m.textContent = texto;
+    raiz.appendChild(m);
+  }
+
+  function desenharGrafico(serie) {
+    const svg = $("grafico-svg");
+    const L = $("grafico").clientWidth;
+    const A = L < 560 ? 280 : 340;
+    const m = { e: 48, d: 12, t: 12, b: 28 };
+    svg.textContent = "";
+    svg.setAttribute("viewBox", "0 0 " + L + " " + A);
+    svg.setAttribute("height", A);
+
+    const ts = serie.map((p) => Date.parse(p.t));
+    const vs = serie.map((p) => p.v);
+    const ini = ts[0], fim = ts[ts.length - 1];
+    const topo = P.eixoMax(vs);
+    const x = (t) => m.e + ((t - ini) / Math.max(fim - ini, 1)) * (L - m.e - m.d);
+    const y = (v) => A - m.b - (v / topo) * (A - m.t - m.b);
+
+    const passo = topo > 16000 ? 4000 : 2000;
+    for (let v = 0; v <= topo; v += passo) {
+      el("line", { x1: m.e, x2: L - m.d, y1: y(v), y2: y(v), stroke: "var(--linha)", "stroke-width": 1 }, svg);
+      el("text", { x: m.e - 8, y: y(v) + 4, "text-anchor": "end" }, svg).textContent = P.num(v);
+    }
+
+    serie.forEach((p, i) => {
+      const h = P.horaLocal(p.t);
+      if (h !== 0 && (h !== 12 || L < 560)) return;
+      el("line", { x1: x(ts[i]), x2: x(ts[i]), y1: A - m.b, y2: A - m.b + 5, stroke: "var(--tinta-2)" }, svg);
+      const tx = el("text", { x: x(ts[i]), y: A - 8, "text-anchor": "middle" }, svg);
+      tx.textContent = h === 0 ? P.formatarHora(p.t).slice(0, 5) : "12h";
+    });
+
+    const pontos = serie.map((p, i) => x(ts[i]).toFixed(1) + "," + y(p.v).toFixed(1));
+    el("polygon", { points: x(ini) + "," + y(0) + " " + pontos.join(" ") + " " + x(fim) + "," + y(0), fill: "var(--agua)", opacity: .14 }, svg);
+
+    [[P.VAZAO_MEDIA, "Média, 1.500"], [P.VAZAO_PASSARELA, "Passarela, 8.000"]].forEach(([v, rot]) => {
+      el("line", { x1: m.e, x2: L - m.d, y1: y(v), y2: y(v), stroke: "var(--tinta)", "stroke-width": 1.5, "stroke-dasharray": "6 5" }, svg);
+      el("text", { class: "ref", x: m.e + 8, y: y(v) - 7 }, svg).textContent = rot;
+    });
+
+    el("polyline", { points: pontos.join(" "), fill: "none", stroke: "var(--agua)", "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+    const ult = serie.length - 1;
+    el("circle", { cx: x(ts[ult]), cy: y(vs[ult]), r: 5, fill: "var(--agua)", stroke: "var(--nevoa)", "stroke-width": 2 }, svg);
+
+    const guia = el("line", { y1: m.t, y2: A - m.b, stroke: "var(--tinta)", visibility: "hidden" }, svg);
+    const ponto = el("circle", { r: 6, fill: "var(--agua)", stroke: "var(--nevoa)", "stroke-width": 2, visibility: "hidden" }, svg);
+    const dica = $("dica");
+    let atual = ult;
+
+    function mostrar(i) {
+      atual = i;
+      const px = x(ts[i]), py = y(vs[i]);
+      guia.setAttribute("x1", px); guia.setAttribute("x2", px); guia.setAttribute("visibility", "visible");
+      ponto.setAttribute("cx", px); ponto.setAttribute("cy", py); ponto.setAttribute("visibility", "visible");
+      dica.hidden = false;
+      dica.textContent = P.formatarHora(serie[i].t) + ": " + P.formatarVazao(vs[i], unidade);
+      const larg = dica.offsetWidth;
+      const esquerda = Math.min(Math.max(px - larg / 2, 0), L - larg);
+      const acima = py - dica.offsetHeight - 12;
+      dica.style.transform = "translate(" + esquerda + "px," + (acima < 0 ? py + 12 : acima) + "px)";
+    }
+    function esconder() {
+      guia.setAttribute("visibility", "hidden");
+      ponto.setAttribute("visibility", "hidden");
+      dica.hidden = true;
+    }
+    function maisProximo(cx) {
+      const r = svg.getBoundingClientRect();
+      const px = ((cx - r.left) / r.width) * L;
+      let melhor = 0;
+      ts.forEach((t, i) => { if (Math.abs(x(t) - px) < Math.abs(x(ts[melhor]) - px)) melhor = i; });
+      return melhor;
+    }
+    svg.onpointermove = (e) => mostrar(maisProximo(e.clientX));
+    svg.onpointerdown = svg.onpointermove;
+    svg.onpointerleave = esconder;
+    svg.onblur = esconder;
+    svg.onkeydown = (e) => {
+      if (e.key === "ArrowLeft") { mostrar(Math.max(atual - 1, 0)); e.preventDefault(); }
+      else if (e.key === "ArrowRight") { mostrar(Math.min(atual + 1, ult)); e.preventDefault(); }
+      else if (e.key === "Escape") esconder();
+    };
+    svg.setAttribute("aria-label", "Vazão de " + P.num(Math.min(...vs)) + " a " + P.num(Math.max(...vs)) + " metros cúbicos por segundo nas últimas leituras. Use as setas para percorrer. A tabela abaixo traz todos os valores.");
+  }
+
+  function desenharAtracoes() {
+    const v = simulada == null ? dados.vazao_m3s : simulada;
+    const ritmo = P.ritmo24h(dados);
+    const base = simulada == null ? relatos : [];
+    const caixa = $("atracoes");
+    caixa.textContent = "";
+    P.ATRACOES.forEach((a) => {
+      const e = P.estadoAtracao(a, v, ritmo, base, Date.now());
+      const art = h("article", "atracao");
+      const topo = h("div", "topo-a");
+      const nome = h("div");
+      nome.append(h("h3", null, a.nome), h("span", "sub", a.sub));
+      const icone = { dentro: "●", atencao: "▲", acima: "■", fechado: "■" }[e.chave];
+      const est = h("span", "estado-a " + e.chave, icone + " " + e.rotulo);
+      topo.append(nome, est);
+
+      const pct = Math.min(100, (v / a.limite) * 100);
+      const med = h("div", "medidor");
+      med.setAttribute("role", "img");
+      med.setAttribute("aria-label", "Vazão em " + Math.round((v / a.limite) * 100) + "% do limite");
+      const fill = h("i");
+      fill.style.width = pct + "%";
+      med.append(fill);
+
+      const margem = a.limite - v;
+      const nums = h("div", "numeros-a");
+      nums.append(
+        h("span", null, "Limite: " + P.formatarVazao(a.limite, unidade)),
+        h("span", null, (margem >= 0 ? "Margem: " : "Excesso: ") + P.formatarVazao(Math.abs(margem), unidade))
+      );
+      art.append(topo, med, nums, h("p", null, P.projecao(a, v, ritmo)));
+      if (a.foraDeServico) art.append(h("p", null, a.foraDeServico));
+
+      let nota = "Fonte do limite: " + a.fonte + (a.fonte.endsWith(".") ? "" : ".");
+      if (e.ultimo) {
+        const min = P.atrasoMin(e.ultimo.quando, Date.now());
+        nota = "Último relato: " + P.ROTULO_SITUACAO[e.ultimo.situacao] +
+          (e.ultimo.indefinido ? ", sem previsão de reabertura" : "") + ", " + P.textoAtraso(min) + ". " + nota;
+      }
+      art.append(h("p", "nota-a", nota));
+      caixa.append(art);
+    });
+  }
+
+  function desenharBarras() {
+    const v = simulada == null ? dados.vazao_m3s : simulada;
+    const caixa = $("barras");
+    caixa.textContent = "";
+    const max = Math.max(18000, v) * 1.02;
+    const itens = P.REFERENCIAS.map((r) => ({ ...r }));
+    if (!itens.some((r) => r.v === simulada)) itens.push({ v, agora: true });
+    itens.sort((a, b) => a.v - b.v);
+
+    itens.forEach((r) => {
+      const atual = r.agora || r.v === simulada;
+      const linha = h(atual ? "div" : "button", "barra" + (atual ? " agora" : r.limite ? " limite" : ""));
+      const nome = h("div", "nome");
+      nome.append(
+        h("b", null, atual && simulada != null ? "Simulação: " + r.nome : atual ? "Leitura atual" : r.nome),
+        h("span", null, atual ? "≈ " + P.num(P.piscinas(r.v), 1) + " piscinas olímpicas por segundo" : r.nota)
+      );
+      const trilho = h("div", "trilho");
+      const fill = h("i");
+      fill.style.width = Math.max(0.6, (r.v / max) * 100) + "%";
+      trilho.append(fill);
+      const valor = h("div", "valor", P.formatarVazao(r.v, unidade));
+      if (!atual) {
+        const razao = v / r.v;
+        valor.append(h("small", null, "agora: " + (razao >= 2 ? P.num(razao, 1) + "× este valor" : P.num(razao * 100) + "% deste valor")));
+        linha.type = "button";
+        linha.title = "Simular " + P.formatarVazao(r.v, unidade);
+        linha.addEventListener("click", () => simular(r.v));
+      }
+      linha.append(nome, trilho, valor);
+      caixa.append(linha);
+    });
+  }
+
+  function simular(v) {
+    simulada = v;
+    desenharSimulacao();
+  }
+
+  function desenharSimulacao() {
+    const barra = $("simulacao");
+    barra.hidden = simulada == null;
+    if (simulada != null) {
+      $("simulacao-texto").textContent = "Simulação: " + P.formatarVazao(simulada, unidade) +
+        ". Leitura real: " + P.formatarVazao(dados.vazao_m3s, unidade) + ".";
+    }
+    document.body.style.paddingBottom = simulada == null ? "" : "72px";
+    desenharAtracoes();
+    desenharBarras();
+  }
+
+  function desenharRelatos() {
+    const secao = $("ocorrencias");
+    secao.hidden = !(CONFIG.FORMULARIO_URL || CONFIG.RELATOS_CSV_URL);
+    if (secao.hidden) return;
+    if (CONFIG.FORMULARIO_URL) {
+      $("botao-registrar").hidden = false;
+      $("botao-registrar").href = CONFIG.FORMULARIO_URL;
+      $("link-registrar").hidden = false;
+    }
+    const lista = relatos.filter((r) => !filtro || r.lado === filtro).slice(0, 40);
+    const ul = $("relatos");
+    ul.textContent = "";
+    lista.forEach((r) => {
+      const li = h("li");
+      const titulo = h("span");
+      titulo.append(
+        h("b", null, r.nome + ": "),
+        P.ROTULO_SITUACAO[r.situacao] + (r.indefinido ? ", sem previsão de reabertura" : "")
+      );
+      li.append(titulo);
+      if (r.obs) li.append(h("span", "txt", r.obs));
+      const meta = [
+        r.motivo || null,
+        r.vazao != null ? P.formatarVazao(r.vazao, unidade) : null,
+        P.formatarHora(r.quando) + " (" + P.textoAtraso(P.atrasoMin(r.quando, Date.now())) + ")",
+        r.fonte || null,
+      ].filter(Boolean).join(". ");
+      li.append(h("span", "meta", meta));
+      ul.append(li);
+    });
+    const vazio = $("relatos-vazio");
+    vazio.hidden = lista.length > 0;
+    if (!lista.length) vazio.textContent = "Nenhum relato publicado até agora.";
+  }
+
+  async function carregarRelatos() {
+    if (!CONFIG.RELATOS_CSV_URL) return;
+    try {
+      const r = await fetch(CONFIG.RELATOS_CSV_URL, { cache: "no-store" });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      relatos = P.lerRelatos(await r.text());
+      desenharRelatos();
+      if (dados) desenharAtracoes();
+    } catch (e) {
+      desenharRelatos();
+      if (!relatos.length) {
+        $("relatos-vazio").hidden = false;
+        $("relatos-vazio").textContent = "Não foi possível carregar os relatos. O cálculo pela vazão continua valendo.";
+      }
+    }
+  }
+
+  function atualizarAtraso() {
+    if (!dados) return;
+    const min = P.atrasoMin(dados.medicao, Date.now());
+    const atrasado = P.dadoAtrasado(min);
+    $("medida").textContent = P.formatarVazao(dados.vazao_m3s, unidade) + " às " + P.formatarHora(dados.medicao).slice(7) + " de " + P.formatarHora(dados.medicao).slice(0, 5) + ", " + P.textoAtraso(min);
+    const alerta = P.alertaPassarela(dados.vazao_m3s, dados.tendencia);
+    const texto = atrasado
+      ? "A última leitura é de " + P.formatarHora(dados.medicao) + ". O rio pode ter mudado desde então."
+      : alerta;
+    $("aviso").hidden = !texto;
+    $("aviso-texto").textContent = texto || "";
+  }
+
+  function mostrar(d) {
+    dados = d;
+    const v = d.vazao_m3s;
+    $("manchete").textContent = P.manchete(v);
+    $("tendencia").textContent = P.fraseTendencia(d);
+    $("estacao").textContent = d.estacao;
+    desenharRegua(v);
+    desenharGrafico(d.serie);
+
+    $("apoio-grafico").textContent = d.serie.length < 2
+      ? "Ainda não há leituras suficientes para traçar a linha."
+      : "Vazão em m³/s. Passe o mouse ou toque no gráfico para ver cada leitura.";
+    $("n-litros").textContent = P.num(v / 1000, 1) + " milhões de L/s";
+    $("n-piscinas").textContent = "≈ " + P.num(P.piscinas(v), 1) + " por segundo";
+    $("n-taxa").textContent = d.taxa_m3s_por_hora == null ? "Sem dado" : P.comSinal(d.taxa_m3s_por_hora) + " m³/s por hora";
+    if (d.janela_taxa_horas != null) {
+      const s = document.createElement("small");
+      s.textContent = "média das últimas " + P.num(d.janela_taxa_horas) + " h";
+      $("n-taxa").appendChild(s);
+    }
+    $("n-cota").textContent = d.cota == null ? "Sem dado" : P.num(d.cota, 1) + " cm";
+    $("n-qualidade").textContent = P.qualidade(d.qualidade);
+
+    const tabela = $("tabela");
+    tabela.textContent = "";
+    d.serie.slice().reverse().forEach((p) => {
+      const tr = tabela.insertRow();
+      tr.insertCell().textContent = P.formatarHora(p.t);
+      tr.insertCell().textContent = P.formatarVazao(p.v, unidade);
+    });
+    $("estado").textContent = "Dados buscados na ANA em " + P.formatarHora(d.gerado_em) + ".";
+    atualizarAtraso();
+    desenharSimulacao();
+    desenharRelatos();
+  }
+
+  async function carregar() {
+    try {
+      const r = await fetch("vazao.json?t=" + Date.now(), { cache: "no-store" });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      mostrar(await r.json());
+    } catch (e) {
+      if (dados) {
+        $("estado").textContent = "Não foi possível buscar dados novos. Mostrando os de " + P.formatarHora(dados.gerado_em) + ".";
+      } else {
+        $("manchete").textContent = "Não foi possível carregar a vazão";
+        $("medida").textContent = "Recarregue a página em alguns minutos.";
+      }
+    }
+  }
+
+  let espera;
+  new ResizeObserver(() => {
+    clearTimeout(espera);
+    espera = setTimeout(() => { if (dados) desenharGrafico(dados.serie); }, 120);
+  }).observe($("grafico"));
+
+  $("voltar").addEventListener("click", () => {
+    simulada = null;
+    desenharSimulacao();
+    $("barras").scrollIntoView({ block: "nearest" });
+  });
+  document.querySelectorAll('input[name="unidade"]').forEach((r) => r.addEventListener("change", () => {
+    unidade = r.value;
+    if (dados) mostrar(dados);
+  }));
+  document.querySelectorAll('input[name="filtro"]').forEach((r) => r.addEventListener("change", () => {
+    filtro = r.value;
+    desenharRelatos();
+  }));
+
+  carregar();
+  carregarRelatos();
+  setInterval(() => { carregar(); carregarRelatos(); }, INTERVALO_MS);
+  setInterval(atualizarAtraso, 60 * 1000);
+})();
+</script>
+</body>
+</html>

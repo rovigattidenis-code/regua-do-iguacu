@@ -1,0 +1,7 @@
+# Credenciais e arquivos locais: nunca enviar ao GitHub
+.env
+.token_cache.json
+erro.log
+*.tmp
+.claude/
+Régua do Iguaçu.md
