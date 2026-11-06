@@ -16,7 +16,7 @@ concurrency:
 jobs:
   atualizar:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -28,7 +28,16 @@ jobs:
         env:
           ANA_IDENTIFICADOR: ${{ secrets.ANA_IDENTIFICADOR }}
           ANA_SENHA: ${{ secrets.ANA_SENHA }}
-        run: python ana_vazao.py
+        # O servico da ANA oscila: tenta ate 3 vezes, com 3 minutos entre elas.
+        run: |
+          for tentativa in 1 2 3; do
+            python ana_vazao.py && exit 0
+            if [ "$tentativa" -lt 3 ]; then
+              echo "Tentativa $tentativa falhou. Nova tentativa em 3 minutos."
+              sleep 180
+            fi
+          done
+          exit 1
 
       - name: Publicar vazao.json
         run: |
