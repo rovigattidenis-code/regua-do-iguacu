@@ -23,6 +23,7 @@
     --alerta-tinta: #2b2100;
     --critico: #a3261c;
     --critico-tinta: #ffffff;
+    --agua-critica: #b3261e;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -35,6 +36,7 @@
       --esmalte: #e6edea;
       --critico: #e8857a;
       --critico-tinta: #2a0b08;
+      --agua-critica: #d8453a;
     }
   }
   :root[data-theme="dark"] {
@@ -47,6 +49,7 @@
     --esmalte: #e6edea;
     --critico: #e8857a;
     --critico-tinta: #2a0b08;
+    --agua-critica: #d8453a;
   }
 
   * { box-sizing: border-box; }
@@ -56,10 +59,22 @@
     color: var(--tinta);
     font: 400 1.0625rem/1.5 Barlow, system-ui, sans-serif;
   }
-  main { max-width: 960px; margin: 0 auto; padding: 32px 16px 48px; }
+  main { max-width: 960px; margin: 0 auto; padding: 16px 16px 48px; }
   h1, h2 { font-family: "Barlow Condensed", Barlow, system-ui, sans-serif; font-weight: 600; margin: 0; }
   a { color: inherit; }
   :focus-visible { outline: 3px solid var(--agua); outline-offset: 3px; }
+
+  .idiomas { display: flex; justify-content: flex-end; gap: 4px; margin-bottom: 16px; }
+  .bandeira {
+    display: inline-flex;
+    padding: 4px;
+    border: 2px solid transparent;
+    background: transparent;
+    cursor: pointer;
+    line-height: 0;
+  }
+  .bandeira[aria-pressed="true"] { border-color: var(--tinta); }
+  .bandeira svg { display: block; width: 28px; height: 20px; }
 
   .topo {
     display: grid;
@@ -69,7 +84,7 @@
   }
   @media (min-width: 720px) {
     .topo { grid-template-columns: minmax(0, 1fr) 200px; gap: 48px; }
-    main { padding-top: 56px; }
+    main { padding-top: 24px; }
   }
   .leitura { display: flex; flex-direction: column; justify-content: flex-end; min-height: 400px; padding-bottom: 8px; }
   h1 { font-size: clamp(2.5rem, 8.4vw, 5rem); line-height: 1.02; max-width: 13ch; text-wrap: balance; }
@@ -105,12 +120,25 @@
     background: var(--agua);
     opacity: .88;
     transform-origin: bottom;
+    transition: background-color .4s;
   }
+  /* Acima da linha da passarela a agua fica vermelha. */
+  .regua .agua.critica { background: var(--agua-critica); opacity: .94; }
   .regua .agua.sobe { animation: subir 1.1s cubic-bezier(.2, .7, .2, 1); }
   @keyframes subir { from { transform: scaleY(0); } }
+  /* Tracejado da media: sai um pouco dos dois lados da haste e se ve sobre a agua ou o esmalte. */
+  .regua .tracejado {
+    position: absolute;
+    left: -8px;
+    width: 56px;
+    height: 3px;
+    transform: translateY(1.5px);
+    background: repeating-linear-gradient(90deg, var(--tinta) 0 6px, var(--esmalte) 6px 10px);
+    pointer-events: none;
+  }
   .regua .marca {
     position: absolute;
-    left: 48px;
+    left: 52px;
     transform: translateY(50%);
     font-size: .875rem;
     line-height: 1.1;
@@ -118,11 +146,22 @@
     white-space: nowrap;
   }
   .regua .marca.ref { color: var(--tinta); font-weight: 600; }
-  @media (prefers-reduced-motion: reduce) { .regua .agua.sobe { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .regua .agua.sobe { animation: none; } .regua .agua { transition: none; } }
 
   section { margin-top: 48px; }
   h2 { font-size: 1.75rem; line-height: 1.1; }
   .apoio-grafico { margin: 4px 0 12px; color: var(--tinta-2); max-width: 70ch; }
+  .periodos { display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0 4px; }
+  .periodo {
+    min-height: 36px;
+    padding: 6px 12px;
+    border: 1px solid var(--linha);
+    background: transparent;
+    color: var(--tinta);
+    font: 600 .9375rem Barlow, system-ui, sans-serif;
+    cursor: pointer;
+  }
+  .periodo[aria-pressed="true"] { background: var(--tinta); border-color: var(--tinta); color: var(--nevoa); }
   .grafico { position: relative; }
   .grafico svg { display: block; width: 100%; touch-action: pan-y; }
   .grafico text { font: 400 13px Barlow, system-ui, sans-serif; fill: var(--tinta-2); }
@@ -269,46 +308,67 @@
 </head>
 <body>
 <main>
+  <nav class="idiomas" id="idiomas" data-i18n-aria="idioma.aria" aria-label="Idioma">
+    <button type="button" class="bandeira" data-lang="pt">
+      <svg viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" fill="#009c3b"/><polygon points="14,2.5 25.5,10 14,17.5 2.5,10" fill="#ffdf00"/><circle cx="14" cy="10" r="4.4" fill="#002776"/><rect width="28" height="20" fill="none" stroke="#0004"/></svg>
+    </button>
+    <button type="button" class="bandeira" data-lang="en">
+      <svg viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" fill="#fff"/><g fill="#b22234"><rect y="0" width="28" height="1.54"/><rect y="3.08" width="28" height="1.54"/><rect y="6.16" width="28" height="1.54"/><rect y="9.23" width="28" height="1.54"/><rect y="12.31" width="28" height="1.54"/><rect y="15.39" width="28" height="1.54"/><rect y="18.46" width="28" height="1.54"/></g><rect width="12" height="10.77" fill="#3c3b6e"/><rect width="28" height="20" fill="none" stroke="#0004"/></svg>
+    </button>
+    <button type="button" class="bandeira" data-lang="es">
+      <svg viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" fill="#74acdf"/><rect y="6.67" width="28" height="6.67" fill="#fff"/><circle cx="14" cy="10" r="2.3" fill="#f6b40e"/><rect width="28" height="20" fill="none" stroke="#0004"/></svg>
+    </button>
+    <button type="button" class="bandeira" data-lang="fr">
+      <svg viewBox="0 0 28 20" aria-hidden="true"><rect width="9.34" height="20" fill="#0055a4"/><rect x="9.33" width="9.34" height="20" fill="#fff"/><rect x="18.66" width="9.34" height="20" fill="#ef4135"/><rect width="28" height="20" fill="none" stroke="#0004"/></svg>
+    </button>
+  </nav>
+
   <div class="topo">
     <div class="leitura">
-      <h1 id="manchete">Carregando a vazão do Iguaçu</h1>
+      <h1 id="manchete" data-i18n="carregando">Carregando a vazão do Iguaçu</h1>
       <p class="medida" id="medida"></p>
       <p class="tendencia" id="tendencia"></p>
-      <div class="unidade" role="radiogroup" aria-label="Unidade">
+      <div class="unidade" role="radiogroup" data-i18n-aria="unidade.aria" aria-label="Unidade">
         <label><input type="radio" name="unidade" value="m3" checked> m³/s</label>
-        <label><input type="radio" name="unidade" value="ml"> milhões de L/s</label>
+        <label><input type="radio" name="unidade" value="ml"> <span data-i18n="un.ml">milhões de L/s</span></label>
       </div>
       <p class="aviso" id="aviso" role="status" hidden>
         <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 1.5 19 18H1z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M10 7.5v5M10 14.5v1.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         <span id="aviso-texto"></span>
       </p>
-      <a class="registrar" id="link-registrar" href="#ocorrencias" hidden>Registrar ocorrência</a>
+      <a class="registrar" id="link-registrar" href="#ocorrencias" data-i18n="link.registrar" hidden>Registrar ocorrência</a>
     </div>
-    <div class="regua" id="regua" role="img" aria-label="Régua da vazão"></div>
+    <div class="regua" id="regua" role="img"></div>
   </div>
 
   <section aria-labelledby="titulo-grafico">
-    <h2 id="titulo-grafico">Últimas 48 horas</h2>
-    <p class="apoio-grafico" id="apoio-grafico">Vazão em m³/s, leitura a leitura.</p>
+    <h2 id="titulo-grafico"></h2>
+    <div class="periodos" role="group" id="periodos" data-i18n-aria="graf.periodo">
+      <button type="button" class="periodo" data-horas="24">24 h</button>
+      <button type="button" class="periodo" data-horas="48">48 h</button>
+      <button type="button" class="periodo" data-horas="96">96 h</button>
+      <button type="button" class="periodo" data-horas="168">168 h</button>
+    </div>
+    <p class="apoio-grafico" id="apoio-grafico"></p>
     <div class="grafico" id="grafico">
       <svg id="grafico-svg" tabindex="0" role="img"></svg>
       <div class="dica" id="dica" hidden></div>
     </div>
 
     <dl class="numeros">
-      <div><dt>Em litros</dt><dd id="n-litros"></dd></div>
-      <div><dt>Em piscinas olímpicas</dt><dd id="n-piscinas"></dd></div>
-      <div><dt>Velocidade</dt><dd id="n-taxa"></dd></div>
-      <div><dt>Nível do rio (cota)</dt><dd id="n-cota"></dd></div>
-      <div><dt>Qualidade da leitura</dt><dd id="n-qualidade"></dd></div>
+      <div><dt data-i18n="num.litros"></dt><dd id="n-litros"></dd></div>
+      <div><dt data-i18n="num.piscinas"></dt><dd id="n-piscinas"></dd></div>
+      <div><dt data-i18n="num.velocidade"></dt><dd id="n-taxa"></dd></div>
+      <div><dt data-i18n="num.cota"></dt><dd id="n-cota"></dd></div>
+      <div><dt data-i18n="num.qualidade"></dt><dd id="n-qualidade"></dd></div>
     </dl>
 
     <details>
-      <summary>Ver todas as leituras</summary>
+      <summary data-i18n="tabela.ver"></summary>
       <div class="rolagem">
         <table>
-          <caption>Leituras de vazão, da mais recente para a mais antiga</caption>
-          <thead><tr><th scope="col">Leitura</th><th scope="col">Vazão</th></tr></thead>
+          <caption data-i18n="tabela.caption"></caption>
+          <thead><tr><th scope="col" data-i18n="tabela.leitura"></th><th scope="col" data-i18n="tabela.vazao"></th></tr></thead>
           <tbody id="tabela"></tbody>
         </table>
       </div>
@@ -316,58 +376,67 @@
   </section>
 
   <section aria-labelledby="titulo-atracoes">
-    <h2 id="titulo-atracoes">Situação por atração</h2>
-    <p class="apoio-grafico">Calculada pela vazão e pelos relatos publicados. A projeção é linear, usa a variação recente e não considera chuva a montante.</p>
+    <h2 id="titulo-atracoes" data-i18n="atr.titulo"></h2>
+    <p class="apoio-grafico" data-i18n="atr.apoio"></p>
     <div class="atracoes" id="atracoes"></div>
   </section>
 
   <section aria-labelledby="titulo-agua">
-    <h2 id="titulo-agua">Quanta água é esta?</h2>
-    <p class="apoio-grafico">A linha destacada é a leitura atual. Toque em outra linha para simular aquela vazão.</p>
+    <h2 id="titulo-agua" data-i18n="agua.titulo"></h2>
+    <p class="apoio-grafico" data-i18n="agua.apoio"></p>
     <div class="barras" id="barras"></div>
   </section>
 
   <section id="ocorrencias" aria-labelledby="titulo-relatos" hidden>
     <div class="cabeca-relatos">
-      <h2 id="titulo-relatos">Ocorrências relatadas</h2>
-      <div class="filtro" role="radiogroup" aria-label="Filtrar por lado">
-        <label><input type="radio" name="filtro" value="" checked> Todos</label>
-        <label><input type="radio" name="filtro" value="BR"> Brasil</label>
-        <label><input type="radio" name="filtro" value="AR"> Argentina</label>
+      <h2 id="titulo-relatos" data-i18n="rel.titulo"></h2>
+      <div class="filtro" role="radiogroup" data-i18n-aria="rel.filtro">
+        <label><input type="radio" name="filtro" value="" checked> <span data-i18n="rel.todos"></span></label>
+        <label><input type="radio" name="filtro" value="BR"> <span data-i18n="rel.brasil"></span></label>
+        <label><input type="radio" name="filtro" value="AR"> <span data-i18n="rel.argentina"></span></label>
       </div>
     </div>
-    <p class="apoio-grafico">Relatos de campo, publicados depois de revisados. Um fechamento relatado prevalece sobre o cálculo.</p>
+    <p class="apoio-grafico" data-i18n="rel.apoio"></p>
     <ul class="relatos" id="relatos"></ul>
     <p class="estado" id="relatos-vazio" hidden></p>
-    <a class="botao" id="botao-registrar" target="_blank" rel="noopener" hidden>Registrar ocorrência</a>
+    <a class="botao" id="botao-registrar" target="_blank" rel="noopener" data-i18n="link.registrar" hidden></a>
   </section>
 
   <footer>
     <p class="estado" id="estado"></p>
-    <p>Dados da ANA e da Copel, estação <span id="estacao">65992502</span>. Os limites vêm de comunicados das concessionárias e da imprensa, não são limites oficiais da ANA. Sem relato, a página calcula pela vazão e não sabe se uma atração está aberta. Confirme com o parque antes de decidir um passeio.</p>
+    <p id="rodape"></p>
   </footer>
 </main>
 
 <div class="simulacao" id="simulacao" role="status" hidden>
   <span id="simulacao-texto"></span>
-  <button type="button" id="voltar">Voltar à leitura real</button>
+  <button type="button" id="voltar" data-i18n="sim.voltar"></button>
 </div>
 
 <script src="config.js"></script>
+<script src="idiomas.js"></script>
 <script src="painel.js"></script>
 <script>
 (function () {
   const P = window.Painel;
+  const t = P.t;
   const $ = (id) => document.getElementById(id);
   const SVG = "http://www.w3.org/2000/svg";
   const INTERVALO_MS = 10 * 60 * 1000;
+  const LOCALE = { pt: "pt-BR", en: "en", es: "es", fr: "fr" };
   let dados = null;
   let reguaDesenhada = false;
   let unidade = "m3";
   let simulada = null;
   let relatos = [];
   let filtro = "";
+  let erroRelatos = false;
+  let horas = 48;
   const CONFIG = window.ReguaConfig || {};
+
+  // A escolha manual fica guardada no aparelho; sem ela, vale o idioma do sistema.
+  const guardado = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+  const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
 
   function h(tag, classe, texto) {
     const n = document.createElement(tag);
@@ -383,28 +452,55 @@
     return n;
   }
 
+  function aplicarTextos() {
+    document.documentElement.lang = LOCALE[P.idioma()];
+    document.querySelectorAll("[data-i18n]").forEach((n) => { n.textContent = t(n.dataset.i18n); });
+    document.querySelectorAll("[data-i18n-aria]").forEach((n) => n.setAttribute("aria-label", t(n.dataset.i18nAria)));
+    document.querySelectorAll(".bandeira").forEach((b) => {
+      const nome = window.ReguaIdiomas[b.dataset.lang]["idioma.nome"];
+      b.setAttribute("aria-label", nome);
+      b.title = nome;
+      b.setAttribute("aria-pressed", String(b.dataset.lang === P.idioma()));
+    });
+    document.querySelectorAll(".periodo").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.horas) === horas)));
+    $("titulo-grafico").textContent = t("graf.titulo", { h: horas });
+    $("rodape").textContent = t("rodape.texto", { e: dados ? dados.estacao : "65992502" });
+  }
+
+  function trocarIdioma(l) {
+    P.definirIdioma(l);
+    aplicarTextos();
+    if (dados) mostrar(dados);
+    else if (erroCarga) mostrarErroCarga();
+  }
+
   function desenharRegua(v) {
     const raiz = $("regua");
     raiz.textContent = "";
-    raiz.setAttribute("aria-label", "Régua: vazão atual de " + P.num(v) + " metros cúbicos por segundo, média de 1.500");
+    raiz.setAttribute("aria-label", t("regua.aria", { v: P.num(v), m: P.num(P.VAZAO_MEDIA) }));
     const max = Math.max(12000, Math.ceil((v * 1.15) / 2000) * 2000);
     const pct = (x) => (x / max) * 100;
 
     const haste = document.createElement("div");
     haste.className = "haste";
     for (let x = 0; x <= max; x += 500) {
-      const t = document.createElement("div");
-      t.className = "traco";
-      t.style.bottom = pct(x) + "%";
-      t.style.width = x % 2000 === 0 ? "100%" : "50%";
-      haste.appendChild(t);
+      const tr = document.createElement("div");
+      tr.className = "traco";
+      tr.style.bottom = pct(x) + "%";
+      tr.style.width = x % 2000 === 0 ? "100%" : "50%";
+      haste.appendChild(tr);
     }
     const agua = document.createElement("div");
-    agua.className = "agua";
+    agua.className = "agua" + (v >= P.VAZAO_PASSARELA ? " critica" : "");
     haste.appendChild(agua);
     raiz.appendChild(haste);
 
-    const refs = [[P.VAZAO_MEDIA, "média"], [P.VAZAO_PASSARELA, "passarela"]];
+    const media = document.createElement("div");
+    media.className = "tracejado";
+    media.style.bottom = pct(P.VAZAO_MEDIA) + "%";
+    raiz.appendChild(media);
+
+    const refs = [[P.VAZAO_MEDIA, t("regua.media")], [P.VAZAO_PASSARELA, t("regua.passarela")]];
     const passo = max > 16000 ? 4000 : 2000;
     for (let x = 0; x <= max; x += passo) {
       if (refs.some(([r]) => Math.abs(pct(r) - pct(x)) < 5)) continue;
@@ -425,7 +521,8 @@
     raiz.appendChild(m);
   }
 
-  function desenharGrafico(serie) {
+  function desenharGrafico() {
+    const serie = P.recorteSerie(dados.serie, horas);
     const svg = $("grafico-svg");
     const L = $("grafico").clientWidth;
     const A = L < 560 ? 280 : 340;
@@ -433,12 +530,20 @@
     svg.textContent = "";
     svg.setAttribute("viewBox", "0 0 " + L + " " + A);
     svg.setAttribute("height", A);
+    $("dica").hidden = true;
 
+    if (serie.length < 2) {
+      $("apoio-grafico").textContent = t("graf.poucos");
+      return;
+    }
     const ts = serie.map((p) => Date.parse(p.t));
     const vs = serie.map((p) => p.v);
     const ini = ts[0], fim = ts[ts.length - 1];
+    const cobertura = Math.round((fim - ini) / 3600e3);
+    $("apoio-grafico").textContent = t("graf.apoio") + (cobertura < horas - 2 ? " " + t("graf.parcial", { h: cobertura }) : "");
+
     const topo = P.eixoMax(vs);
-    const x = (t) => m.e + ((t - ini) / Math.max(fim - ini, 1)) * (L - m.e - m.d);
+    const x = (v) => m.e + ((v - ini) / Math.max(fim - ini, 1)) * (L - m.e - m.d);
     const y = (v) => A - m.b - (v / topo) * (A - m.t - m.b);
 
     const passo = topo > 16000 ? 4000 : 2000;
@@ -447,18 +552,22 @@
       el("text", { x: m.e - 8, y: y(v) + 4, "text-anchor": "end" }, svg).textContent = P.num(v);
     }
 
+    // Marcas do eixo do tempo: mais espacadas nos periodos longos e nas telas estreitas.
+    let passoH = horas <= 24 ? 6 : horas <= 48 ? 12 : 24;
+    if (L < 560) passoH *= 2;
     serie.forEach((p, i) => {
-      const h = P.horaLocal(p.t);
-      if (h !== 0 && (h !== 12 || L < 560)) return;
+      const hBrt = Math.round(ts[i] / 3600e3) - 3;
+      if (((hBrt % passoH) + passoH) % passoH !== 0) return;
+      const hl = P.horaLocal(p.t);
       el("line", { x1: x(ts[i]), x2: x(ts[i]), y1: A - m.b, y2: A - m.b + 5, stroke: "var(--tinta-2)" }, svg);
       const tx = el("text", { x: x(ts[i]), y: A - 8, "text-anchor": "middle" }, svg);
-      tx.textContent = h === 0 ? P.formatarHora(p.t).slice(0, 5) : "12h";
+      tx.textContent = hl === 0 ? P.dia(p.t) : t("eixo.hora", { h: hl });
     });
 
     const pontos = serie.map((p, i) => x(ts[i]).toFixed(1) + "," + y(p.v).toFixed(1));
     el("polygon", { points: x(ini) + "," + y(0) + " " + pontos.join(" ") + " " + x(fim) + "," + y(0), fill: "var(--agua)", opacity: .14 }, svg);
 
-    [[P.VAZAO_MEDIA, "Média, 1.500"], [P.VAZAO_PASSARELA, "Passarela, 8.000"]].forEach(([v, rot]) => {
+    [[P.VAZAO_MEDIA, t("graf.media", { v: P.num(P.VAZAO_MEDIA) })], [P.VAZAO_PASSARELA, t("graf.passarela", { v: P.num(P.VAZAO_PASSARELA) })]].forEach(([v, rot]) => {
       el("line", { x1: m.e, x2: L - m.d, y1: y(v), y2: y(v), stroke: "var(--tinta)", "stroke-width": 1.5, "stroke-dasharray": "6 5" }, svg);
       el("text", { class: "ref", x: m.e + 8, y: y(v) - 7 }, svg).textContent = rot;
     });
@@ -472,7 +581,7 @@
     const dica = $("dica");
     let atual = ult;
 
-    function mostrar(i) {
+    function mostrarPonto(i) {
       atual = i;
       const px = x(ts[i]), py = y(vs[i]);
       guia.setAttribute("x1", px); guia.setAttribute("x2", px); guia.setAttribute("visibility", "visible");
@@ -493,19 +602,27 @@
       const r = svg.getBoundingClientRect();
       const px = ((cx - r.left) / r.width) * L;
       let melhor = 0;
-      ts.forEach((t, i) => { if (Math.abs(x(t) - px) < Math.abs(x(ts[melhor]) - px)) melhor = i; });
+      ts.forEach((v, i) => { if (Math.abs(x(v) - px) < Math.abs(x(ts[melhor]) - px)) melhor = i; });
       return melhor;
     }
-    svg.onpointermove = (e) => mostrar(maisProximo(e.clientX));
+    svg.onpointermove = (e) => mostrarPonto(maisProximo(e.clientX));
     svg.onpointerdown = svg.onpointermove;
     svg.onpointerleave = esconder;
     svg.onblur = esconder;
     svg.onkeydown = (e) => {
-      if (e.key === "ArrowLeft") { mostrar(Math.max(atual - 1, 0)); e.preventDefault(); }
-      else if (e.key === "ArrowRight") { mostrar(Math.min(atual + 1, ult)); e.preventDefault(); }
+      if (e.key === "ArrowLeft") { mostrarPonto(Math.max(atual - 1, 0)); e.preventDefault(); }
+      else if (e.key === "ArrowRight") { mostrarPonto(Math.min(atual + 1, ult)); e.preventDefault(); }
       else if (e.key === "Escape") esconder();
     };
-    svg.setAttribute("aria-label", "Vazão de " + P.num(Math.min(...vs)) + " a " + P.num(Math.max(...vs)) + " metros cúbicos por segundo nas últimas leituras. Use as setas para percorrer. A tabela abaixo traz todos os valores.");
+    svg.setAttribute("aria-label", t("graf.aria", { min: P.num(Math.min(...vs)), max: P.num(Math.max(...vs)), h: horas }));
+
+    const tabela = $("tabela");
+    tabela.textContent = "";
+    serie.slice().reverse().forEach((p) => {
+      const tr = tabela.insertRow();
+      tr.insertCell().textContent = P.formatarHora(p.t);
+      tr.insertCell().textContent = P.formatarVazao(p.v, unidade);
+    });
   }
 
   function desenharAtracoes() {
@@ -516,36 +633,37 @@
     caixa.textContent = "";
     P.ATRACOES.forEach((a) => {
       const e = P.estadoAtracao(a, v, ritmo, base, Date.now());
+      const nomes = P.nomeAtracao(a);
       const art = h("article", "atracao");
       const topo = h("div", "topo-a");
       const nome = h("div");
-      nome.append(h("h3", null, a.nome), h("span", "sub", a.sub));
+      nome.append(h("h3", null, nomes.nome), h("span", "sub", nomes.sub));
       const icone = { dentro: "●", atencao: "▲", acima: "■", fechado: "■" }[e.chave];
-      const est = h("span", "estado-a " + e.chave, icone + " " + e.rotulo);
-      topo.append(nome, est);
+      topo.append(nome, h("span", "estado-a " + e.chave, icone + " " + e.rotulo));
 
-      const pct = Math.min(100, (v / a.limite) * 100);
       const med = h("div", "medidor");
       med.setAttribute("role", "img");
-      med.setAttribute("aria-label", "Vazão em " + Math.round((v / a.limite) * 100) + "% do limite");
+      med.setAttribute("aria-label", t("atr.medidor", { p: Math.round((v / a.limite) * 100) }));
       const fill = h("i");
-      fill.style.width = pct + "%";
+      fill.style.width = Math.min(100, (v / a.limite) * 100) + "%";
       med.append(fill);
 
       const margem = a.limite - v;
       const nums = h("div", "numeros-a");
       nums.append(
-        h("span", null, "Limite: " + P.formatarVazao(a.limite, unidade)),
-        h("span", null, (margem >= 0 ? "Margem: " : "Excesso: ") + P.formatarVazao(Math.abs(margem), unidade))
+        h("span", null, t("atr.limite", { v: P.formatarVazao(a.limite, unidade) })),
+        h("span", null, t(margem >= 0 ? "atr.margem" : "atr.excesso", { v: P.formatarVazao(Math.abs(margem), unidade) }))
       );
       art.append(topo, med, nums, h("p", null, P.projecao(a, v, ritmo)));
-      if (a.foraDeServico) art.append(h("p", null, a.foraDeServico));
+      if (nomes.fora) art.append(h("p", null, nomes.fora));
 
-      let nota = "Fonte do limite: " + a.fonte + (a.fonte.endsWith(".") ? "" : ".");
+      let nota = t("atr.fonte", { f: a.fonte.replace(/\.$/, "") });
       if (e.ultimo) {
-        const min = P.atrasoMin(e.ultimo.quando, Date.now());
-        nota = "Último relato: " + P.ROTULO_SITUACAO[e.ultimo.situacao] +
-          (e.ultimo.indefinido ? ", sem previsão de reabertura" : "") + ", " + P.textoAtraso(min) + ". " + nota;
+        nota = t("atr.ultimo", {
+          s: P.rotuloSituacao(e.ultimo.situacao),
+          ind: e.ultimo.indefinido ? t("semPrevisao") : "",
+          quando: P.textoAtraso(P.atrasoMin(e.ultimo.quando, Date.now())),
+        }) + " " + nota;
       }
       art.append(h("p", "nota-a", nota));
       caixa.append(art);
@@ -557,7 +675,7 @@
     const caixa = $("barras");
     caixa.textContent = "";
     const max = Math.max(18000, v) * 1.02;
-    const itens = P.REFERENCIAS.map((r) => ({ ...r }));
+    const itens = P.REFERENCIAS.map((r) => ({ ...r, ...P.nomeReferencia(r) }));
     if (!itens.some((r) => r.v === simulada)) itens.push({ v, agora: true });
     itens.sort((a, b) => a.v - b.v);
 
@@ -566,8 +684,8 @@
       const linha = h(atual ? "div" : "button", "barra" + (atual ? " agora" : r.limite ? " limite" : ""));
       const nome = h("div", "nome");
       nome.append(
-        h("b", null, atual && simulada != null ? "Simulação: " + r.nome : atual ? "Leitura atual" : r.nome),
-        h("span", null, atual ? "≈ " + P.num(P.piscinas(r.v), 1) + " piscinas olímpicas por segundo" : r.nota)
+        h("b", null, atual && simulada != null ? t("barra.simulacao", { n: r.nome || P.formatarVazao(r.v, unidade) }) : atual ? t("barra.atual") : r.nome),
+        h("span", null, atual ? t("barra.piscinas", { v: P.num(P.piscinas(r.v), 1) }) : r.nota)
       );
       const trilho = h("div", "trilho");
       const fill = h("i");
@@ -576,9 +694,9 @@
       const valor = h("div", "valor", P.formatarVazao(r.v, unidade));
       if (!atual) {
         const razao = v / r.v;
-        valor.append(h("small", null, "agora: " + (razao >= 2 ? P.num(razao, 1) + "× este valor" : P.num(razao * 100) + "% deste valor")));
+        valor.append(h("small", null, razao >= 2 ? t("barra.vezes", { v: P.num(razao, 1) }) : t("barra.pct", { v: P.num(razao * 100) })));
         linha.type = "button";
-        linha.title = "Simular " + P.formatarVazao(r.v, unidade);
+        linha.title = t("barra.simular", { v: P.formatarVazao(r.v, unidade) });
         linha.addEventListener("click", () => simular(r.v));
       }
       linha.append(nome, trilho, valor);
@@ -592,11 +710,12 @@
   }
 
   function desenharSimulacao() {
-    const barra = $("simulacao");
-    barra.hidden = simulada == null;
+    $("simulacao").hidden = simulada == null;
     if (simulada != null) {
-      $("simulacao-texto").textContent = "Simulação: " + P.formatarVazao(simulada, unidade) +
-        ". Leitura real: " + P.formatarVazao(dados.vazao_m3s, unidade) + ".";
+      $("simulacao-texto").textContent = t("sim.texto", {
+        s: P.formatarVazao(simulada, unidade),
+        r: P.formatarVazao(dados.vazao_m3s, unidade),
+      });
     }
     document.body.style.paddingBottom = simulada == null ? "" : "72px";
     desenharAtracoes();
@@ -618,10 +737,7 @@
     lista.forEach((r) => {
       const li = h("li");
       const titulo = h("span");
-      titulo.append(
-        h("b", null, r.nome + ": "),
-        P.ROTULO_SITUACAO[r.situacao] + (r.indefinido ? ", sem previsão de reabertura" : "")
-      );
+      titulo.append(h("b", null, r.nome + ": "), P.rotuloSituacao(r.situacao) + (r.indefinido ? t("semPrevisao") : ""));
       li.append(titulo);
       if (r.obs) li.append(h("span", "txt", r.obs));
       const meta = [
@@ -635,7 +751,7 @@
     });
     const vazio = $("relatos-vazio");
     vazio.hidden = lista.length > 0;
-    if (!lista.length) vazio.textContent = "Nenhum relato publicado até agora.";
+    if (!lista.length) vazio.textContent = t(erroRelatos ? "rel.erro" : "rel.vazio");
   }
 
   async function carregarRelatos() {
@@ -644,26 +760,26 @@
       const r = await fetch(CONFIG.RELATOS_CSV_URL, { cache: "no-store" });
       if (!r.ok) throw new Error("HTTP " + r.status);
       relatos = P.lerRelatos(await r.text());
-      desenharRelatos();
+      erroRelatos = false;
       if (dados) desenharAtracoes();
     } catch (e) {
-      desenharRelatos();
-      if (!relatos.length) {
-        $("relatos-vazio").hidden = false;
-        $("relatos-vazio").textContent = "Não foi possível carregar os relatos. O cálculo pela vazão continua valendo.";
-      }
+      erroRelatos = !relatos.length;
     }
+    desenharRelatos();
   }
 
   function atualizarAtraso() {
     if (!dados) return;
     const min = P.atrasoMin(dados.medicao, Date.now());
-    const atrasado = P.dadoAtrasado(min);
-    $("medida").textContent = P.formatarVazao(dados.vazao_m3s, unidade) + " às " + P.formatarHora(dados.medicao).slice(7) + " de " + P.formatarHora(dados.medicao).slice(0, 5) + ", " + P.textoAtraso(min);
-    const alerta = P.alertaPassarela(dados.vazao_m3s, dados.tendencia);
-    const texto = atrasado
-      ? "A última leitura é de " + P.formatarHora(dados.medicao) + ". O rio pode ter mudado desde então."
-      : alerta;
+    $("medida").textContent = t("medida", {
+      v: P.formatarVazao(dados.vazao_m3s, unidade),
+      hora: P.hora(dados.medicao),
+      dia: P.dia(dados.medicao),
+      atraso: P.textoAtraso(min),
+    });
+    const texto = P.dadoAtrasado(min)
+      ? t("atrasado", { t: P.formatarHora(dados.medicao) })
+      : P.alertaPassarela(dados.vazao_m3s, dados.tendencia);
     $("aviso").hidden = !texto;
     $("aviso-texto").textContent = texto || "";
   }
@@ -671,50 +787,43 @@
   function mostrar(d) {
     dados = d;
     const v = d.vazao_m3s;
+    aplicarTextos();
     $("manchete").textContent = P.manchete(v);
     $("tendencia").textContent = P.fraseTendencia(d);
-    $("estacao").textContent = d.estacao;
     desenharRegua(v);
-    desenharGrafico(d.serie);
+    desenharGrafico();
 
-    $("apoio-grafico").textContent = d.serie.length < 2
-      ? "Ainda não há leituras suficientes para traçar a linha."
-      : "Vazão em m³/s. Passe o mouse ou toque no gráfico para ver cada leitura.";
-    $("n-litros").textContent = P.num(v / 1000, 1) + " milhões de L/s";
-    $("n-piscinas").textContent = "≈ " + P.num(P.piscinas(v), 1) + " por segundo";
-    $("n-taxa").textContent = d.taxa_m3s_por_hora == null ? "Sem dado" : P.comSinal(d.taxa_m3s_por_hora) + " m³/s por hora";
-    if (d.janela_taxa_horas != null) {
-      const s = document.createElement("small");
-      s.textContent = "média das últimas " + P.num(d.janela_taxa_horas) + " h";
-      $("n-taxa").appendChild(s);
-    }
-    $("n-cota").textContent = d.cota == null ? "Sem dado" : P.num(d.cota, 1) + " cm";
+    $("n-litros").textContent = P.formatarVazao(v, "ml");
+    $("n-piscinas").textContent = t("num.piscinasValor", { v: P.num(P.piscinas(v), 1) });
+    $("n-taxa").textContent = d.taxa_m3s_por_hora == null ? t("semDado") : t("num.taxa", { v: P.comSinal(d.taxa_m3s_por_hora) });
+    if (d.janela_taxa_horas != null) $("n-taxa").appendChild(h("small", null, t("num.janela", { h: P.num(d.janela_taxa_horas) })));
+    $("n-cota").textContent = d.cota == null ? t("semDado") : P.num(d.cota, 1) + " cm";
     $("n-qualidade").textContent = P.qualidade(d.qualidade);
 
-    const tabela = $("tabela");
-    tabela.textContent = "";
-    d.serie.slice().reverse().forEach((p) => {
-      const tr = tabela.insertRow();
-      tr.insertCell().textContent = P.formatarHora(p.t);
-      tr.insertCell().textContent = P.formatarVazao(p.v, unidade);
-    });
-    $("estado").textContent = "Dados buscados na ANA em " + P.formatarHora(d.gerado_em) + ".";
+    $("estado").textContent = t("rodape.estado", { t: P.formatarHora(d.gerado_em) });
     atualizarAtraso();
     desenharSimulacao();
     desenharRelatos();
+  }
+
+  let erroCarga = false;
+  function mostrarErroCarga() {
+    $("manchete").textContent = t("erro.carregar");
+    $("medida").textContent = t("erro.recarregue");
   }
 
   async function carregar() {
     try {
       const r = await fetch("vazao.json?t=" + Date.now(), { cache: "no-store" });
       if (!r.ok) throw new Error("HTTP " + r.status);
+      erroCarga = false;
       mostrar(await r.json());
     } catch (e) {
       if (dados) {
-        $("estado").textContent = "Não foi possível buscar dados novos. Mostrando os de " + P.formatarHora(dados.gerado_em) + ".";
+        $("estado").textContent = t("erro.novos", { t: P.formatarHora(dados.gerado_em) });
       } else {
-        $("manchete").textContent = "Não foi possível carregar a vazão";
-        $("medida").textContent = "Recarregue a página em alguns minutos.";
+        erroCarga = true;
+        mostrarErroCarga();
       }
     }
   }
@@ -722,9 +831,19 @@
   let espera;
   new ResizeObserver(() => {
     clearTimeout(espera);
-    espera = setTimeout(() => { if (dados) desenharGrafico(dados.serie); }, 120);
+    espera = setTimeout(() => { if (dados) desenharGrafico(); }, 120);
   }).observe($("grafico"));
 
+  document.querySelectorAll(".bandeira").forEach((b) => b.addEventListener("click", () => {
+    guardar("regua.idioma", b.dataset.lang);
+    trocarIdioma(b.dataset.lang);
+  }));
+  document.querySelectorAll(".periodo").forEach((b) => b.addEventListener("click", () => {
+    horas = Number(b.dataset.horas);
+    guardar("regua.horas", String(horas));
+    aplicarTextos();
+    if (dados) desenharGrafico();
+  }));
   $("voltar").addEventListener("click", () => {
     simulada = null;
     desenharSimulacao();
@@ -739,6 +858,10 @@
     desenharRelatos();
   }));
 
+  const horasGuardadas = Number(guardado("regua.horas"));
+  if ([24, 48, 96, 168].includes(horasGuardadas)) horas = horasGuardadas;
+  P.definirIdioma(guardado("regua.idioma") || P.detectarIdioma(navigator.languages || [navigator.language]));
+  aplicarTextos();
   carregar();
   carregarRelatos();
   setInterval(() => { carregar(); carregarRelatos(); }, INTERVALO_MS);

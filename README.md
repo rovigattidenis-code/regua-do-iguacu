@@ -7,7 +7,11 @@ Página pública com a vazão do Rio Iguaçu na estação Hotel Cataratas (ANA 6
 1. A cada hora, o GitHub roda o `ana_vazao.py`, que busca os dados na ANA e grava o `vazao.json`.
 2. O `index.html` lê esse arquivo e desenha a régua, o gráfico e os números.
 
-As regras de leitura ficam em `painel.js`. Nesse arquivo você altera os limites das atrações (`ATRACOES`), as linhas de comparação (`REFERENCIAS`) e a vazão média. Quando a Garganta del Diablo voltar a funcionar, apague o campo `foraDeServico`.
+A página abre no idioma do aparelho (português, inglês, espanhol ou francês), e as bandeiras no topo trocam o idioma à mão. Os textos ficam em `idiomas.js`: ao mudar uma frase, mude nos quatro idiomas. O gráfico mostra 24, 48, 96 ou 168 horas, e o script busca 7 dias na ANA.
+
+A primeira versão continua no ar em `/v1/` e guardada no Git com a marca `v1`.
+
+As regras de leitura ficam em `painel.js`. Nesse arquivo você altera os limites das atrações (`ATRACOES`), as linhas de comparação (`REFERENCIAS`) e a vazão média. Quando a Garganta del Diablo voltar a funcionar, apague o campo `foraDeServico: true`.
 
 ## Publicar no GitHub
 

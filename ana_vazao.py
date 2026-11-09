@@ -47,7 +47,7 @@ ESTACAO = os.environ.get("ESTACAO", "65992502")
 NOME = os.environ.get("NOME_ESTACAO", "Hotel Cataratas")
 SAIDA = Path(os.environ.get("SAIDA", str(HERE / "vazao.json")))
 # Janelas tentadas em ordem. A primeira que devolver dados e usada.
-RANGES = [r.strip() for r in os.environ.get("RANGES", "DIAS_2,HORA_24,HORA_2").split(",") if r.strip()]
+RANGES = [r.strip() for r in os.environ.get("RANGES", "DIAS_7,DIAS_2,HORA_24,HORA_2").split(",") if r.strip()]
 TOKEN_TTL_MIN = int(os.environ.get("TOKEN_TTL_MIN", "50"))
 CACHE = HERE / ".token_cache.json"
 LOG = HERE / "erro.log"

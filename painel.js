@@ -1,8 +1,8 @@
 // Regras de leitura do dashboard. Nao toca na pagina, para poder ser testado com node --test.
 (function (raiz, fabrica) {
-  if (typeof module !== "undefined" && module.exports) module.exports = fabrica();
-  else raiz.Painel = fabrica();
-})(typeof self !== "undefined" ? self : this, function () {
+  if (typeof module !== "undefined" && module.exports) module.exports = fabrica(require("./idiomas.js"));
+  else raiz.Painel = fabrica(raiz.ReguaIdiomas);
+})(typeof self !== "undefined" ? self : this, function (TEXTOS) {
   // Referencias vindas da imprensa, do Parque e das concessionarias, nao sao limites oficiais da ANA.
   const VAZAO_MEDIA = 1500;
   const VAZAO_PASSARELA = 8000;
@@ -11,27 +11,57 @@
   const VALIDADE_RELATO_H = 12;
   const FUSO = "America/Sao_Paulo";
 
+  const IDIOMAS = ["pt", "en", "es", "fr"];
+  const LOCALE = { pt: "pt-BR", en: "en-US", es: "es-AR", fr: "fr-FR" };
+  let lang = "pt";
+
+  function definirIdioma(l) {
+    if (IDIOMAS.includes(l)) lang = l;
+    return lang;
+  }
+  const idioma = () => lang;
+
+  // O primeiro idioma do aparelho que a pagina conhece; sem nenhum, ingles para o turista estrangeiro.
+  function detectarIdioma(lista) {
+    for (const l of lista || []) {
+      const base = String(l).toLowerCase().slice(0, 2);
+      if (IDIOMAS.includes(base)) return base;
+    }
+    return "en";
+  }
+
+  function t(chave, vars) {
+    const texto = (TEXTOS[lang] && TEXTOS[lang][chave]) || TEXTOS.pt[chave] || chave;
+    return texto.replace(/\{(\w+)\}/g, (m, k) => (vars && vars[k] != null ? vars[k] : m));
+  }
+
   // Para informar que uma atracao voltou a funcionar, apague o campo foraDeServico.
+  // Nomes e descricoes ficam em idiomas.js (atr.<id>.nome e atr.<id>.sub).
   const ATRACOES = [
-    { id: "br-passarela", lado: "BR", nome: "Passarela principal", sub: "Garganta do Diabo, lado brasileiro", limite: 8000, reabertura: 6800, fonte: "Urbia+Cataratas e ICMBio" },
-    {
-      id: "ar-garganta", lado: "AR", nome: "Garganta del Diablo", sub: "Passarela, lado argentino", limite: 7000, reabertura: null, fonte: "Iguazú Argentina S.A.",
-      foraDeServico: "Passarela desmontada desde agosto de 2026, sem data de reabertura divulgada.",
-    },
-    { id: "ar-superior", lado: "AR", nome: "Circuito Superior", sub: "Lado argentino", limite: 11000, reabertura: null, fonte: "Parque Nacional Iguazú" },
-    { id: "ar-inferior", lado: "AR", nome: "Circuito Inferior", sub: "Lado argentino", limite: 11000, reabertura: null, fonte: "Parque Nacional Iguazú" },
+    { id: "br-passarela", lado: "BR", limite: 8000, reabertura: 6800, fonte: "Urbia+Cataratas e ICMBio" },
+    { id: "ar-garganta", lado: "AR", limite: 7000, reabertura: null, fonte: "Iguazú Argentina S.A.", foraDeServico: true },
+    { id: "ar-superior", lado: "AR", limite: 11000, reabertura: null, fonte: "Parque Nacional Iguazú" },
+    { id: "ar-inferior", lado: "AR", limite: 11000, reabertura: null, fonte: "Parque Nacional Iguazú" },
   ];
 
+  // Nomes e notas ficam em idiomas.js (ref.<id>.nome e ref.<id>.nota).
   const REFERENCIAS = [
-    { v: 350, nome: "Mínimo para beleza cênica", nota: "Referência da ANA, boletim de fev/2025", limite: false },
-    { v: 1500, nome: "Média histórica", nota: "Vazão média das Cataratas", limite: false },
-    { v: 6800, nome: "Reabertura da passarela (Brasil)", nota: "Nível de 31/out/2026", limite: false },
-    { v: 7000, nome: "Limite da Garganta del Diablo (Argentina)", nota: "Protocolo da Iguazú Argentina", limite: true },
-    { v: 8000, nome: "Fechamento da passarela (Brasil)", nota: "Com tendência de alta", limite: true },
-    { v: 11000, nome: "Limite dos circuitos Superior e Inferior (Argentina)", nota: "Protocolo do Parque Nacional Iguazú", limite: true },
-    { v: 13488, nome: "Leitura de 13/out/2026", nota: "Estação Hotel Cataratas, 18h", limite: false },
-    { v: 17700, nome: "Pico de 2026", nota: "26/out/2026", limite: false },
+    { id: "cenico", v: 350, limite: false },
+    { id: "media", v: 1500, limite: false },
+    { id: "reabre", v: 6800, limite: false },
+    { id: "garganta", v: 7000, limite: true },
+    { id: "fecha", v: 8000, limite: true },
+    { id: "circuitos", v: 11000, limite: true },
+    { id: "leitura1310", v: 13488, limite: false },
+    { id: "pico", v: 17700, limite: false },
   ];
+
+  const nomeAtracao = (a) => ({
+    nome: t("atr." + a.id + ".nome"),
+    sub: t("atr." + a.id + ".sub"),
+    fora: a.foraDeServico ? t("atr." + a.id + ".fora") : null,
+  });
+  const nomeReferencia = (r) => ({ nome: t("ref." + r.id + ".nome"), nota: t("ref." + r.id + ".nota") });
 
   // Os nomes precisam ser iguais aos do formulario (criar-formulario.gs).
   const LOCAIS = [
@@ -47,12 +77,12 @@
     { id: "ar-trem", lado: "AR", nome: "Tren Ecológico (Argentina)" },
   ];
   const SITUACOES = { Fechado: "fechado", Restrito: "restrito", Reaberto: "aberto" };
-  const ROTULO_SITUACAO = { fechado: "Fechado", restrito: "Restrito", aberto: "Reaberto" };
+  const rotuloSituacao = (s) => t("sit." + s);
 
   const num = (v, casas = 0) =>
-    new Intl.NumberFormat("pt-BR", { maximumFractionDigits: casas, minimumFractionDigits: casas }).format(v);
+    new Intl.NumberFormat(LOCALE[lang], { maximumFractionDigits: casas, minimumFractionDigits: casas }).format(v);
   const comSinal = (v) =>
-    new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 0, signDisplay: "always" }).format(v);
+    new Intl.NumberFormat(LOCALE[lang], { maximumFractionDigits: 0, signDisplay: "always" }).format(v);
 
   function nivel(v) {
     const vezes = v / VAZAO_MEDIA;
@@ -62,18 +92,16 @@
 
   function manchete(v) {
     const n = nivel(v);
-    if (n.chave === "abaixo") return "O Iguaçu está abaixo da vazão média";
-    if (n.chave === "normal") return "O Iguaçu está perto da vazão média";
-    const vezes = num(n.vezes, 1);
-    return "O Iguaçu está com " + vezes + (n.vezes < 2 ? " vez" : " vezes") + " a vazão média";
+    if (n.chave !== "acima") return t("manchete." + n.chave);
+    return t(n.vezes < 2 ? "manchete.acima1" : "manchete.acima", { x: num(n.vezes, 1) });
   }
 
   function fraseTendencia(d) {
-    const rotulo = { subindo: "Subindo", descendo: "Descendo", estavel: "Estável" }[d.tendencia];
-    if (!rotulo) return "Tendência indisponível";
-    if (d.variacao_24h_m3s != null) return rotulo + ": " + comSinal(d.variacao_24h_m3s) + " m³/s em 24 h";
-    if (d.taxa_m3s_por_hora != null) return rotulo + ": " + comSinal(d.taxa_m3s_por_hora) + " m³/s por hora";
-    return rotulo;
+    if (!["subindo", "descendo", "estavel"].includes(d.tendencia)) return t("tend.indisp");
+    const r = t("tend." + d.tendencia);
+    if (d.variacao_24h_m3s != null) return t("tend.24h", { r, v: comSinal(d.variacao_24h_m3s) });
+    if (d.taxa_m3s_por_hora != null) return t("tend.hora", { r, v: comSinal(d.taxa_m3s_por_hora) });
+    return r;
   }
 
   const atrasoMin = (medicaoIso, agoraMs) => Math.floor((agoraMs - Date.parse(medicaoIso)) / 60000);
@@ -81,8 +109,7 @@
 
   function alertaPassarela(v, tendencia) {
     if (v < VAZAO_PASSARELA) return null;
-    const estado = tendencia === "subindo" ? "Acima de 8.000 m³/s e subindo" : "Acima de 8.000 m³/s";
-    return estado + ": nível em que a interdição da passarela das Cataratas costuma ser avaliada. Confirme com o Parque antes de ir.";
+    return t(tendencia === "subindo" ? "alerta.subindo" : "alerta.acima", { lim: num(VAZAO_PASSARELA) });
   }
 
   function eixoMax(valores) {
@@ -90,37 +117,43 @@
     return Math.ceil((pico * 1.1) / 1000) * 1000;
   }
 
-  function formatarHora(iso) {
-    const d = new Date(iso);
-    const dia = new Intl.DateTimeFormat("pt-BR", { timeZone: FUSO, day: "2-digit", month: "2-digit" }).format(d);
-    const hora = new Intl.DateTimeFormat("pt-BR", { timeZone: FUSO, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(d);
-    return dia + ", " + hora;
-  }
+  const dia = (iso) =>
+    new Intl.DateTimeFormat(LOCALE[lang], { timeZone: FUSO, day: "2-digit", month: "2-digit" }).format(new Date(iso));
+  const hora = (iso) =>
+    new Intl.DateTimeFormat(LOCALE[lang], { timeZone: FUSO, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(new Date(iso));
+  const formatarHora = (iso) => dia(iso) + ", " + hora(iso);
 
   function horaLocal(iso) {
     return Number(new Intl.DateTimeFormat("pt-BR", { timeZone: FUSO, hour: "2-digit", hourCycle: "h23" }).format(new Date(iso)));
   }
 
   function textoAtraso(min) {
-    if (min < 60) return "há " + Math.max(min, 0) + " min";
+    if (min < 60) return t("atraso.min", { n: Math.max(min, 0) });
     if (min < 2880) {
       const h = Math.floor(min / 60);
-      return "há " + h + (h === 1 ? " hora" : " horas");
+      return h === 1 ? t("atraso.hora") : t("atraso.horas", { n: h });
     }
-    return "há " + Math.floor(min / 1440) + " dias";
+    return t("atraso.dias", { n: Math.floor(min / 1440) });
   }
 
-  const qualidade = (q) => ({ ok: "Boa", suspeita: "Suspeita", ruim: "Ruim" }[q] || "Desconhecida");
+  const qualidade = (q) => t("qual." + (["ok", "suspeita", "ruim"].includes(q) ? q : "desconhecida"));
 
   const piscinas = (v) => v / M3_POR_PISCINA;
 
   const formatarVazao = (v, unidade) =>
-    unidade === "ml" ? num(v / 1000, 1) + " milhões de L/s" : num(v) + " m³/s";
+    unidade === "ml" ? num(v / 1000, 1) + " " + t("un.ml") : num(v) + " m³/s";
 
   function ritmo24h(d) {
     if (d.variacao_24h_m3s != null) return d.variacao_24h_m3s;
     if (d.taxa_m3s_por_hora != null) return d.taxa_m3s_por_hora * 24;
     return null;
+  }
+
+  // Leituras das ultimas `horas` horas, contadas a partir da leitura mais recente.
+  function recorteSerie(serie, horas) {
+    if (!serie.length) return [];
+    const fim = Date.parse(serie[serie.length - 1].t);
+    return serie.filter((p) => Date.parse(p.t) >= fim - horas * 3600e3);
   }
 
   function ultimoRelato(id, relatos) {
@@ -130,9 +163,9 @@
   }
 
   function estadoPelaVazao(a, v, ritmo) {
-    if (v >= a.limite) return { chave: "acima", rotulo: "Acima do limite" };
-    if (v >= a.limite * 0.85 || (ritmo > 150 && v >= a.limite * 0.7)) return { chave: "atencao", rotulo: "Atenção" };
-    return { chave: "dentro", rotulo: "Dentro do limite" };
+    if (v >= a.limite) return { chave: "acima", rotulo: t("estado.acima") };
+    if (v >= a.limite * 0.85 || (ritmo > 150 && v >= a.limite * 0.7)) return { chave: "atencao", rotulo: t("estado.atencao") };
+    return { chave: "dentro", rotulo: t("estado.dentro") };
   }
 
   // A pagina calcula pela vazao e nao sabe o que o parque decidiu: "Fechado" so aparece com relato.
@@ -142,30 +175,28 @@
     if (ultimo) {
       const horas = (agoraMs - Date.parse(ultimo.quando)) / 36e5;
       if (ultimo.situacao === "fechado" && (ultimo.indefinido || horas < VALIDADE_RELATO_H))
-        return { ...base, chave: "fechado", rotulo: "Fechado, relatado", relatado: true };
+        return { ...base, chave: "fechado", rotulo: t("estado.fechadoRel"), relatado: true };
       if (ultimo.situacao === "restrito" && horas < VALIDADE_RELATO_H)
-        return { ...base, chave: "atencao", rotulo: "Restrito, relatado", relatado: true };
+        return { ...base, chave: "atencao", rotulo: t("estado.restritoRel"), relatado: true };
     }
     if (a.foraDeServico && !(ultimo && ultimo.situacao === "aberto"))
-      return { ...base, chave: "fechado", rotulo: "Fora de serviço" };
+      return { ...base, chave: "fechado", rotulo: t("estado.fora") };
     return { ...base, ...estadoPelaVazao(a, v, ritmo) };
   }
 
   function tempoAte(horas) {
-    return horas < 48 ? "~" + Math.max(1, Math.round(horas)) + " h" : "~" + num(horas / 24, 1) + " dias";
+    return horas < 48 ? t("tempo.h", { n: Math.max(1, Math.round(horas)) }) : t("tempo.dias", { n: num(horas / 24, 1) });
   }
 
   function projecao(a, v, ritmo) {
     const falta = a.limite - v;
-    if (ritmo == null) return "Sem ritmo de subida para projetar.";
+    if (ritmo == null) return t("proj.semRitmo");
     if (falta <= 0) {
-      if (ritmo >= 0) return "Acima do limite e sem queda no ritmo atual.";
-      return a.reabertura
-        ? "Acima do limite e descendo. A passarela reabriu com " + num(a.reabertura) + " m³/s em 31/out."
-        : "Acima do limite e descendo. A reabertura depende do parque.";
+      if (ritmo >= 0) return t("proj.acimaSemQueda");
+      return a.reabertura ? t("proj.acimaDescendoReab", { v: num(a.reabertura) }) : t("proj.acimaDescendo");
     }
-    if (ritmo > 0) return "No ritmo atual, chega ao limite em " + tempoAte((falta / ritmo) * 24) + ".";
-    return "Estável ou descendo, sem aproximação do limite.";
+    if (ritmo > 0) return t("proj.chega", { t: tempoAte((falta / ritmo) * 24) });
+    return t("proj.estavel");
   }
 
   function lerCSV(texto) {
@@ -193,9 +224,9 @@
   }
 
   function vazaoDoRelato(s) {
-    const t = (s || "").trim().replace(/\./g, "").replace(",", ".");
-    if (!t) return null;
-    const n = Number(t);
+    const txt = (s || "").trim().replace(/\./g, "").replace(",", ".");
+    if (!txt) return null;
+    const n = Number(txt);
     return Number.isFinite(n) && n >= 0 ? n : null;
   }
 
@@ -227,9 +258,10 @@
   }
 
   return {
-    VAZAO_MEDIA, VAZAO_PASSARELA, ATRACOES, REFERENCIAS, LOCAIS, ROTULO_SITUACAO,
+    VAZAO_MEDIA, VAZAO_PASSARELA, ATRACOES, REFERENCIAS, LOCAIS, IDIOMAS,
+    t, definirIdioma, idioma, detectarIdioma, nomeAtracao, nomeReferencia, rotuloSituacao,
     num, comSinal, nivel, manchete, fraseTendencia, atrasoMin, dadoAtrasado, alertaPassarela, eixoMax,
-    formatarHora, horaLocal, textoAtraso, qualidade, piscinas, formatarVazao, ritmo24h, estadoAtracao,
-    projecao, lerCSV, lerRelatos,
+    dia, hora, formatarHora, horaLocal, textoAtraso, qualidade, piscinas, formatarVazao, ritmo24h, recorteSerie,
+    estadoAtracao, projecao, lerCSV, lerRelatos,
   };
 });

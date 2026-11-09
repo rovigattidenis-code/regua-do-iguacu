@@ -10,7 +10,7 @@ function criarOcorrencias() {
     "Sendero Macuco (Argentina)", "Sendero Verde (Argentina)", "Tren Ecológico (Argentina)", "Outro local (Argentina)"
   ];
 
-  var form = FormApp.create("Registrar ocorrência: Régua do Iguaçu");
+  var form = FormApp.create("Registrar ocorrência: Régua do Iguaçu", true);
   form.setDescription("Relatos aparecem no dashboard depois de aprovados. O nome em \"Quem relatou\" fica público.");
   form.addListItem().setTitle("Local").setChoiceValues(locais).setRequired(true);
   form.addMultipleChoiceItem().setTitle("Situação").setChoiceValues(["Fechado", "Restrito", "Reaberto"]).setRequired(true);
