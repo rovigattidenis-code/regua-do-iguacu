@@ -132,6 +132,14 @@
     "erro.novos": "Não foi possível buscar dados novos. Mostrando os de {t}.",
     "erro.carregar": "Não foi possível carregar a vazão",
     "erro.recarregue": "Recarregue a página em alguns minutos.",
+    "teste.selo": "Versão de teste",
+    "credito.autor": "Desenvolvido por Denis Bonfim Rovigatti, guia de turismo e engenheiro de controle e automação.",
+    "credito.uso": "Uso permitido para consulta e compartilhamento. É proibido comercializar.",
+    "credito.contato": "Dúvidas e sugestões:",
+    "atalho.botao": "Criar atalho na tela",
+    "atalho.ios": "No iPhone: toque em Compartilhar e depois em Adicionar à Tela de Início.",
+    "atalho.outro": "No menu do navegador, escolha Instalar app ou Adicionar à tela inicial.",
+    "atalho.feito": "Atalho criado.",
   };
 
   const en = {
@@ -262,6 +270,14 @@
     "erro.novos": "New data could not be fetched. Showing data from {t}.",
     "erro.carregar": "The flow could not be loaded",
     "erro.recarregue": "Reload the page in a few minutes.",
+    "teste.selo": "Test version",
+    "credito.autor": "Developed by Denis Bonfim Rovigatti, tour guide and control and automation engineer.",
+    "credito.uso": "You may use it for reference and share it. Commercial use is prohibited.",
+    "credito.contato": "Questions and suggestions:",
+    "atalho.botao": "Create a shortcut",
+    "atalho.ios": "On iPhone: tap Share, then Add to Home Screen.",
+    "atalho.outro": "In your browser menu, choose Install app or Add to Home screen.",
+    "atalho.feito": "Shortcut created.",
   };
 
   const es = {
@@ -392,6 +408,14 @@
     "erro.novos": "No se pudieron obtener datos nuevos. Mostrando los del {t}.",
     "erro.carregar": "No se pudo cargar el caudal",
     "erro.recarregue": "Vuelva a cargar la página en unos minutos.",
+    "teste.selo": "Versión de prueba",
+    "credito.autor": "Desarrollado por Denis Bonfim Rovigatti, guía de turismo e ingeniero en control y automatización.",
+    "credito.uso": "Se permite usarlo como consulta y compartirlo. Está prohibida su comercialización.",
+    "credito.contato": "Dudas y sugerencias:",
+    "atalho.botao": "Crear acceso directo",
+    "atalho.ios": "En iPhone: toque Compartir y luego Agregar a inicio.",
+    "atalho.outro": "En el menú del navegador, elija Instalar aplicación o Agregar a la pantalla de inicio.",
+    "atalho.feito": "Acceso directo creado.",
   };
 
   const fr = {
@@ -522,6 +546,14 @@
     "erro.novos": "Impossible de récupérer de nouvelles données. Affichage des données du {t}.",
     "erro.carregar": "Impossible de charger le débit",
     "erro.recarregue": "Rechargez la page dans quelques minutes.",
+    "teste.selo": "Version de test",
+    "credito.autor": "Développé par Denis Bonfim Rovigatti, guide touristique et ingénieur en contrôle et automatisation.",
+    "credito.uso": "Utilisation autorisée pour consultation et partage. Toute commercialisation est interdite.",
+    "credito.contato": "Questions et suggestions :",
+    "atalho.botao": "Créer un raccourci",
+    "atalho.ios": "Sur iPhone : touchez Partager, puis Sur l'écran d'accueil.",
+    "atalho.outro": "Dans le menu du navigateur, choisissez Installer l'application ou Ajouter à l'écran d'accueil.",
+    "atalho.feito": "Raccourci créé.",
   };
 
   return { pt, en, es, fr };

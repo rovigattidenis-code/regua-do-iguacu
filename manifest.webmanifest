@@ -1,0 +1,16 @@
+{
+  "name": "Régua do Iguaçu",
+  "short_name": "Régua Iguaçu",
+  "description": "Vazão do Rio Iguaçu nas Cataratas, comparada com os limites de cada atração.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f2621",
+  "theme_color": "#13362d",
+  "lang": "pt-BR",
+  "icons": [
+    { "src": "icone-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icone-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icone.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

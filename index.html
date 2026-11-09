@@ -5,7 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Régua do Iguaçu</title>
 <meta name="description" content="Vazão do Rio Iguaçu na estação Hotel Cataratas, comparada com a média.">
-<link rel="icon" href="data:,">
+<link rel="icon" href="icone.svg" type="image/svg+xml">
+<link rel="icon" href="icone-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icone-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#13362d">
+<meta name="apple-mobile-web-app-title" content="Régua do Iguaçu">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Régua do Iguaçu">
+<meta property="og:title" content="Régua do Iguaçu">
+<meta property="og:description" content="Vazão do Rio Iguaçu nas Cataratas, comparada com os limites de cada atração. Versão de teste.">
+<meta property="og:url" content="https://rovigattidenis-code.github.io/regua-do-iguacu/">
+<meta property="og:image" content="https://rovigattidenis-code.github.io/regua-do-iguacu/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Logo da Régua do Iguaçu: uma régua de rio com água até a metade">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
@@ -64,7 +79,22 @@
   a { color: inherit; }
   :focus-visible { outline: 3px solid var(--agua); outline-offset: 3px; }
 
-  .idiomas { display: flex; justify-content: flex-end; gap: 4px; margin-bottom: 16px; }
+  .barra-topo { display: flex; justify-content: space-between; align-items: center; gap: 8px 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .acoes-topo { display: flex; align-items: center; gap: 8px 12px; flex-wrap: wrap; }
+  .selo { padding: 3px 8px; background: var(--alerta); color: var(--alerta-tinta); font-size: .875rem; font-weight: 600; }
+  .atalho {
+    min-height: 36px;
+    padding: 6px 12px;
+    border: 1px solid var(--tinta);
+    background: transparent;
+    color: var(--tinta);
+    font: 600 .9375rem Barlow, system-ui, sans-serif;
+    cursor: pointer;
+  }
+  .atalho[hidden] { display: none; }
+  .dica-atalho { flex-basis: 100%; margin: 0; color: var(--tinta-2); font-size: .9375rem; }
+  .dica-atalho[hidden] { display: none; }
+  .idiomas { display: flex; gap: 4px; }
   .bandeira {
     display: inline-flex;
     padding: 4px;
@@ -308,6 +338,11 @@
 </head>
 <body>
 <main>
+  <div class="barra-topo">
+  <div class="acoes-topo">
+    <span class="selo" data-i18n="teste.selo">Versão de teste</span>
+    <button type="button" class="atalho" id="atalho" data-i18n="atalho.botao">Criar atalho na tela</button>
+  </div>
   <nav class="idiomas" id="idiomas" data-i18n-aria="idioma.aria" aria-label="Idioma">
     <button type="button" class="bandeira" data-lang="pt">
       <svg viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" fill="#009c3b"/><polygon points="14,2.5 25.5,10 14,17.5 2.5,10" fill="#ffdf00"/><circle cx="14" cy="10" r="4.4" fill="#002776"/><rect width="28" height="20" fill="none" stroke="#0004"/></svg>
@@ -316,12 +351,14 @@
       <svg viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" fill="#fff"/><g fill="#b22234"><rect y="0" width="28" height="1.54"/><rect y="3.08" width="28" height="1.54"/><rect y="6.16" width="28" height="1.54"/><rect y="9.23" width="28" height="1.54"/><rect y="12.31" width="28" height="1.54"/><rect y="15.39" width="28" height="1.54"/><rect y="18.46" width="28" height="1.54"/></g><rect width="12" height="10.77" fill="#3c3b6e"/><rect width="28" height="20" fill="none" stroke="#0004"/></svg>
     </button>
     <button type="button" class="bandeira" data-lang="es">
-      <svg viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" fill="#74acdf"/><rect y="6.67" width="28" height="6.67" fill="#fff"/><circle cx="14" cy="10" r="2.3" fill="#f6b40e"/><rect width="28" height="20" fill="none" stroke="#0004"/></svg>
+      <svg viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" fill="#aa151b"/><rect y="5" width="28" height="10" fill="#f1bf00"/><rect width="28" height="20" fill="none" stroke="#0004"/></svg>
     </button>
     <button type="button" class="bandeira" data-lang="fr">
       <svg viewBox="0 0 28 20" aria-hidden="true"><rect width="9.34" height="20" fill="#0055a4"/><rect x="9.33" width="9.34" height="20" fill="#fff"/><rect x="18.66" width="9.34" height="20" fill="#ef4135"/><rect width="28" height="20" fill="none" stroke="#0004"/></svg>
     </button>
   </nav>
+  <p class="dica-atalho" id="dica-atalho" role="status" hidden></p>
+  </div>
 
   <div class="topo">
     <div class="leitura">
@@ -405,6 +442,8 @@
   <footer>
     <p class="estado" id="estado"></p>
     <p id="rodape"></p>
+    <p><span data-i18n="credito.autor"></span> <span data-i18n="credito.uso"></span></p>
+    <p><span data-i18n="credito.contato"></span> <a href="https://wa.me/5545998411964" target="_blank" rel="noopener">WhatsApp +55 45 99841-1964</a>, <a href="https://reservastech.com.br" target="_blank" rel="noopener">reservastech.com.br</a></p>
   </footer>
 </main>
 
@@ -857,6 +896,28 @@
     filtro = r.value;
     desenharRelatos();
   }));
+
+  let pedidoInstalacao = null;
+  const instalado = () => window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+  if (instalado()) $("atalho").hidden = true;
+  window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); pedidoInstalacao = e; });
+  window.addEventListener("appinstalled", () => {
+    $("atalho").hidden = true;
+    $("dica-atalho").hidden = false;
+    $("dica-atalho").textContent = t("atalho.feito");
+  });
+  $("atalho").addEventListener("click", async () => {
+    if (pedidoInstalacao) {
+      pedidoInstalacao.prompt();
+      await pedidoInstalacao.userChoice;
+      pedidoInstalacao = null;
+      return;
+    }
+    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    $("dica-atalho").hidden = false;
+    $("dica-atalho").textContent = t(ios ? "atalho.ios" : "atalho.outro");
+  });
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 
   const horasGuardadas = Number(guardado("regua.horas"));
   if ([24, 48, 96, 168].includes(horasGuardadas)) horas = horasGuardadas;
