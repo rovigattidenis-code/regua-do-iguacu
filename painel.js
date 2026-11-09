@@ -149,6 +149,13 @@
     return null;
   }
 
+  // Mensagem pronta para o WhatsApp, no idioma da pagina.
+  function textoCompartilhar(d, url) {
+    if (!d) return t("compartilhar.sem", { url });
+    return t("compartilhar.texto", { manchete: manchete(d.vazao_m3s), v: formatarVazao(d.vazao_m3s, "m3"), url });
+  }
+  const linkWhatsApp = (texto) => "https://wa.me/?text=" + encodeURIComponent(texto);
+
   // Leituras das ultimas `horas` horas, contadas a partir da leitura mais recente.
   function recorteSerie(serie, horas) {
     if (!serie.length) return [];
@@ -262,6 +269,6 @@
     t, definirIdioma, idioma, detectarIdioma, nomeAtracao, nomeReferencia, rotuloSituacao,
     num, comSinal, nivel, manchete, fraseTendencia, atrasoMin, dadoAtrasado, alertaPassarela, eixoMax,
     dia, hora, formatarHora, horaLocal, textoAtraso, qualidade, piscinas, formatarVazao, ritmo24h, recorteSerie,
-    estadoAtracao, projecao, lerCSV, lerRelatos,
+    estadoAtracao, projecao, lerCSV, lerRelatos, textoCompartilhar, linkWhatsApp,
   };
 });

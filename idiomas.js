@@ -140,6 +140,9 @@
     "atalho.ios": "No iPhone: toque em Compartilhar e depois em Adicionar à Tela de Início.",
     "atalho.outro": "No menu do navegador, escolha Instalar app ou Adicionar à tela inicial.",
     "atalho.feito": "Atalho criado.",
+    "compartilhar.botao": "Compartilhar no WhatsApp",
+    "compartilhar.texto": "{manchete}: {v}. Veja ao vivo: {url}",
+    "compartilhar.sem": "Veja ao vivo a vazão do Rio Iguaçu nas Cataratas: {url}",
   };
 
   const en = {
@@ -278,6 +281,9 @@
     "atalho.ios": "On iPhone: tap Share, then Add to Home Screen.",
     "atalho.outro": "In your browser menu, choose Install app or Add to Home screen.",
     "atalho.feito": "Shortcut created.",
+    "compartilhar.botao": "Share on WhatsApp",
+    "compartilhar.texto": "{manchete}: {v}. See it live: {url}",
+    "compartilhar.sem": "See the Iguaçu River flow at the Falls live: {url}",
   };
 
   const es = {
@@ -416,6 +422,9 @@
     "atalho.ios": "En iPhone: toque Compartir y luego Agregar a inicio.",
     "atalho.outro": "En el menú del navegador, elija Instalar aplicación o Agregar a la pantalla de inicio.",
     "atalho.feito": "Acceso directo creado.",
+    "compartilhar.botao": "Compartir por WhatsApp",
+    "compartilhar.texto": "{manchete}: {v}. Véalo en vivo: {url}",
+    "compartilhar.sem": "Vea en vivo el caudal del río Iguazú en las Cataratas: {url}",
   };
 
   const fr = {
@@ -554,6 +563,9 @@
     "atalho.ios": "Sur iPhone : touchez Partager, puis Sur l'écran d'accueil.",
     "atalho.outro": "Dans le menu du navigateur, choisissez Installer l'application ou Ajouter à l'écran d'accueil.",
     "atalho.feito": "Raccourci créé.",
+    "compartilhar.botao": "Partager sur WhatsApp",
+    "compartilhar.texto": "{manchete} : {v}. À suivre en direct : {url}",
+    "compartilhar.sem": "Suivez en direct le débit de l'Iguaçu aux chutes : {url}",
   };
 
   return { pt, en, es, fr };

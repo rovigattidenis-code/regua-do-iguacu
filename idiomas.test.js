@@ -68,3 +68,18 @@ test("recorteSerie guarda so as ultimas horas pedidas", () => {
   assert.strictEqual(p.recorteSerie(serie, 24)[0].v, 143);
   assert.deepStrictEqual(p.recorteSerie([], 24), []);
 });
+
+test("mensagem do WhatsApp traz a leitura e o link", () => {
+  const url = "https://exemplo.com/regua/";
+  assert.strictEqual(
+    p.textoCompartilhar({ vazao_m3s: 8250 }, url),
+    "O Iguaçu está com 5,5 vezes a vazão média: 8.250 m³/s. Veja ao vivo: https://exemplo.com/regua/"
+  );
+  assert.strictEqual(p.textoCompartilhar(null, url), "Veja ao vivo a vazão do Rio Iguaçu nas Cataratas: https://exemplo.com/regua/");
+  p.definirIdioma("en");
+  assert.match(p.textoCompartilhar({ vazao_m3s: 8250 }, url), /^The Iguaçu is at 5\.5 times its average flow: 8,250 m³\/s\. See it live: /);
+});
+
+test("link do WhatsApp codifica a mensagem", () => {
+  assert.strictEqual(p.linkWhatsApp("a b&c"), "https://wa.me/?text=a%20b%26c");
+});
