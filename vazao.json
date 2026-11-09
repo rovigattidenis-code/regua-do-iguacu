@@ -12,13 +12,9 @@
  "janela_taxa_horas": 6.0,
  "tendencia": "descendo",
  "range_usado": "DIAS_7",
- "gerado_em": "2026-11-09T17:23:17-03:00",
- "atraso_min": 23,
+ "gerado_em": "2026-11-09T18:20:13-03:00",
+ "atraso_min": 80,
  "serie": [
-  {
-   "t": "2026-11-02T18:00:00-03:00",
-   "v": 4532.1
-  },
   {
    "t": "2026-11-02T19:00:00-03:00",
    "v": 4936.6
