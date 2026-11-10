@@ -143,6 +143,7 @@
     "compartilhar.botao": "Compartilhar no WhatsApp",
     "compartilhar.texto": "{manchete}: {v}. Veja ao vivo: {url}",
     "compartilhar.sem": "Veja ao vivo a vazão do Rio Iguaçu nas Cataratas: {url}",
+    "privacidade": "Esta página conta as visitas de forma anônima, sem cookies, com o GoatCounter.",
   };
 
   const en = {
@@ -284,6 +285,7 @@
     "compartilhar.botao": "Share on WhatsApp",
     "compartilhar.texto": "{manchete}: {v}. See it live: {url}",
     "compartilhar.sem": "See the Iguaçu River flow at the Falls live: {url}",
+    "privacidade": "This page counts visits anonymously, without cookies, using GoatCounter.",
   };
 
   const es = {
@@ -425,6 +427,7 @@
     "compartilhar.botao": "Compartir por WhatsApp",
     "compartilhar.texto": "{manchete}: {v}. Véalo en vivo: {url}",
     "compartilhar.sem": "Vea en vivo el caudal del río Iguazú en las Cataratas: {url}",
+    "privacidade": "Esta página cuenta las visitas de forma anónima, sin cookies, con GoatCounter.",
   };
 
   const fr = {
@@ -566,6 +569,7 @@
     "compartilhar.botao": "Partager sur WhatsApp",
     "compartilhar.texto": "{manchete} : {v}. À suivre en direct : {url}",
     "compartilhar.sem": "Suivez en direct le débit de l'Iguaçu aux chutes : {url}",
+    "privacidade": "Cette page compte les visites de façon anonyme, sans cookies, avec GoatCounter.",
   };
 
   return { pt, en, es, fr };

@@ -21,6 +21,8 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Logo da Régua do Iguaçu: uma régua de rio com água até a metade">
 <meta name="twitter:card" content="summary_large_image">
+<!-- Contagem anonima de visitas, sem cookies: painel em regua-iguacu.goatcounter.com -->
+<script data-goatcounter="https://regua-iguacu.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
@@ -368,7 +370,7 @@
 
   <div class="topo">
     <div class="leitura">
-      <h1 id="manchete" data-i18n="carregando">Carregando a vazão do Iguaçu</h1>
+      <h1 id="manchete">Carregando a vazão do Iguaçu</h1>
       <p class="medida" id="medida"></p>
       <p class="tendencia" id="tendencia"></p>
       <div class="unidade" role="radiogroup" data-i18n-aria="unidade.aria" aria-label="Unidade">
@@ -450,6 +452,7 @@
     <p id="rodape"></p>
     <p><strong data-i18n="credito.autor"></strong> <span data-i18n="credito.uso"></span></p>
     <p><strong data-i18n="credito.contato"></strong> <a href="https://wa.me/5545998411964" target="_blank" rel="noopener">WhatsApp +55 45 99841-1964</a>, <a href="https://reservastech.com.br" target="_blank" rel="noopener">reservastech.com.br</a></p>
+    <p data-i18n="privacidade"></p>
   </footer>
 </main>
 
@@ -483,6 +486,13 @@
   const guardado = (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } };
   const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
 
+  // Conta o uso dos botoes no painel do GoatCounter (aba de eventos). Sem o contador carregado, nao faz nada.
+  function evento(nome) {
+    try {
+      if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: nome, title: nome, event: true });
+    } catch (e) {}
+  }
+
   function h(tag, classe, texto) {
     const n = document.createElement(tag);
     if (classe) n.className = classe;
@@ -509,6 +519,8 @@
     });
     document.querySelectorAll(".periodo").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.horas) === horas)));
     $("titulo-grafico").textContent = t("graf.titulo", { h: horas });
+    // A manchete so mostra "Carregando" antes da primeira leitura; depois quem escreve nela e mostrar().
+    if (!dados && !erroCarga) $("manchete").textContent = t("carregando");
     $("rodape").textContent = t("rodape.texto", { e: dados ? dados.estacao : "65992502" });
     $("compartilhar").href = P.linkWhatsApp(P.textoCompartilhar(dados, location.origin + location.pathname));
   }
@@ -752,6 +764,7 @@
 
   function simular(v) {
     simulada = v;
+    evento("simulacao");
     desenharSimulacao();
   }
 
@@ -882,11 +895,13 @@
 
   document.querySelectorAll(".bandeira").forEach((b) => b.addEventListener("click", () => {
     guardar("regua.idioma", b.dataset.lang);
+    evento("idioma-" + b.dataset.lang);
     trocarIdioma(b.dataset.lang);
   }));
   document.querySelectorAll(".periodo").forEach((b) => b.addEventListener("click", () => {
     horas = Number(b.dataset.horas);
     guardar("regua.horas", String(horas));
+    evento("grafico-" + horas + "h");
     aplicarTextos();
     if (dados) desenharGrafico();
   }));
@@ -909,11 +924,14 @@
   if (instalado()) $("atalho").hidden = true;
   window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); pedidoInstalacao = e; });
   window.addEventListener("appinstalled", () => {
+    evento("atalho-criado");
     $("atalho").hidden = true;
     $("dica-atalho").hidden = false;
     $("dica-atalho").textContent = t("atalho.feito");
   });
+  $("compartilhar").addEventListener("click", () => evento("compartilhar-whatsapp"));
   $("atalho").addEventListener("click", async () => {
+    evento("atalho-clique");
     if (pedidoInstalacao) {
       pedidoInstalacao.prompt();
       await pedidoInstalacao.userChoice;
