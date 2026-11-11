@@ -2,23 +2,19 @@
  "estacao": "65992502",
  "nome": "Hotel Cataratas",
  "fonte": "ANA / Copel",
- "vazao_m3s": 5261.0,
- "cota": 280.4,
- "medicao": "2026-11-11T08:00:00-03:00",
- "atualizado_ana": "2026-11-11 08:15:04.703",
+ "vazao_m3s": 5348.5,
+ "cota": 282.9,
+ "medicao": "2026-11-11T09:00:00-03:00",
+ "atualizado_ana": "2026-11-11 09:15:04.72",
  "qualidade": "ok",
- "variacao_24h_m3s": -419.8,
- "taxa_m3s_por_hora": -2.9,
+ "variacao_24h_m3s": -328.7,
+ "taxa_m3s_por_hora": 15.8,
  "janela_taxa_horas": 6.0,
  "tendencia": "descendo",
  "range_usado": "DIAS_7",
- "gerado_em": "2026-11-11T08:24:33-03:00",
- "atraso_min": 24,
+ "gerado_em": "2026-11-11T09:25:28-03:00",
+ "atraso_min": 25,
  "serie": [
-  {
-   "t": "2026-11-04T09:00:00-03:00",
-   "v": 6349.5
-  },
   {
    "t": "2026-11-04T10:00:00-03:00",
    "v": 6466.8
@@ -686,6 +682,10 @@
   {
    "t": "2026-11-11T08:00:00-03:00",
    "v": 5261.0
+  },
+  {
+   "t": "2026-11-11T09:00:00-03:00",
+   "v": 5348.5
   }
  ]
 }
