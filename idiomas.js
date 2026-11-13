@@ -159,6 +159,14 @@
     "marca.texto": "Régua do Iguaçu, {url}, leitura de {t}",
     "qr.texto": "Aponte a câmera do celular para abrir a Régua do Iguaçu.",
     "qr.alt": "QR code com o link da Régua do Iguaçu",
+    "guia.titulo": "Criar o atalho no iPhone",
+    "guia.nota": "O iPhone não deixa os sites criarem o atalho sozinhos. São 4 toques:",
+    "guia.passo1": "Toque no botão ••• no canto de baixo da tela, apontado pela seta. Em iPhones mais antigos, toque direto no ícone de compartilhar.",
+    "guia.passo1outro": "Toque no ícone de compartilhar, na barra de endereço do navegador.",
+    "guia.passo2": "Toque em Compartilhar.",
+    "guia.passo3": "Role a lista para baixo e toque em Adicionar à Tela de Início.",
+    "guia.passo4": "Toque em Adicionar. O ícone da Régua aparece na sua tela.",
+    "guia.fechar": "Entendi",
   };
 
   const en = {
@@ -316,6 +324,14 @@
     "marca.texto": "Régua do Iguaçu, {url}, reading from {t}",
     "qr.texto": "Point your phone camera here to open the Régua do Iguaçu.",
     "qr.alt": "QR code with the link to the Régua do Iguaçu",
+    "guia.titulo": "Create the shortcut on iPhone",
+    "guia.nota": "iPhone does not let websites create the shortcut by themselves. It takes 4 taps:",
+    "guia.passo1": "Tap the ••• button at the bottom of the screen, where the arrow points. On older iPhones, tap the share icon directly.",
+    "guia.passo1outro": "Tap the share icon in the browser's address bar.",
+    "guia.passo2": "Tap Share.",
+    "guia.passo3": "Scroll down the list and tap Add to Home Screen.",
+    "guia.passo4": "Tap Add. The Régua icon appears on your screen.",
+    "guia.fechar": "Got it",
   };
 
   const es = {
@@ -473,6 +489,14 @@
     "marca.texto": "Régua do Iguaçu, {url}, lectura del {t}",
     "qr.texto": "Apunte la cámara del celular para abrir la Régua do Iguaçu.",
     "qr.alt": "Código QR con el enlace a la Régua do Iguaçu",
+    "guia.titulo": "Crear el acceso directo en iPhone",
+    "guia.nota": "El iPhone no permite que los sitios creen el acceso directo solos. Son 4 toques:",
+    "guia.passo1": "Toque el botón ••• en la parte de abajo de la pantalla, donde apunta la flecha. En iPhones más antiguos, toque directamente el ícono de compartir.",
+    "guia.passo1outro": "Toque el ícono de compartir en la barra de direcciones del navegador.",
+    "guia.passo2": "Toque Compartir.",
+    "guia.passo3": "Desplácese hacia abajo y toque Agregar a inicio.",
+    "guia.passo4": "Toque Agregar. El ícono de la Régua aparece en su pantalla.",
+    "guia.fechar": "Entendido",
   };
 
   const fr = {
@@ -630,6 +654,14 @@
     "marca.texto": "Régua do Iguaçu, {url}, relevé du {t}",
     "qr.texto": "Pointez l'appareil photo de votre téléphone pour ouvrir la Régua do Iguaçu.",
     "qr.alt": "QR code avec le lien vers la Régua do Iguaçu",
+    "guia.titulo": "Créer le raccourci sur iPhone",
+    "guia.nota": "L'iPhone ne permet pas aux sites de créer le raccourci eux-mêmes. Il suffit de 4 touches :",
+    "guia.passo1": "Touchez le bouton ••• en bas de l'écran, là où pointe la flèche. Sur les iPhone plus anciens, touchez directement l'icône de partage.",
+    "guia.passo1outro": "Touchez l'icône de partage dans la barre d'adresse du navigateur.",
+    "guia.passo2": "Touchez Partager.",
+    "guia.passo3": "Faites défiler la liste et touchez Sur l'écran d'accueil.",
+    "guia.passo4": "Touchez Ajouter. L'icône de la Régua apparaît sur votre écran.",
+    "guia.fechar": "Compris",
   };
 
   return { pt, en, es, fr };
