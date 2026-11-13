@@ -47,7 +47,7 @@ ESTACAO = os.environ.get("ESTACAO", "65992502")
 NOME = os.environ.get("NOME_ESTACAO", "Hotel Cataratas")
 SAIDA = Path(os.environ.get("SAIDA", str(HERE / "vazao.json")))
 # Janelas tentadas em ordem. A primeira que devolver dados e usada.
-RANGES = [r.strip() for r in os.environ.get("RANGES", "DIAS_7,DIAS_2,HORA_24,HORA_2").split(",") if r.strip()]
+RANGES = [r.strip() for r in os.environ.get("RANGES", "DIAS_30,DIAS_14,DIAS_7,DIAS_2,HORA_24,HORA_2").split(",") if r.strip()]
 TOKEN_TTL_MIN = int(os.environ.get("TOKEN_TTL_MIN", "50"))
 CACHE = HERE / ".token_cache.json"
 LOG = HERE / "erro.log"
@@ -57,7 +57,7 @@ def http_get(url, headers):
     h = {"accept": "*/*", "User-Agent": UA}
     h.update(headers)
     req = urllib.request.Request(url, headers=h, method="GET")
-    with urllib.request.urlopen(req, timeout=30) as r:
+    with urllib.request.urlopen(req, timeout=60) as r:
         return json.loads(r.read().decode("utf-8"))
 
 
@@ -199,7 +199,7 @@ def main():
         "range_usado": rng,
         "gerado_em": agora.isoformat(timespec="seconds"),
         "atraso_min": int((agora - ult["t"]).total_seconds() // 60),
-        "serie": [{"t": p["t"].isoformat(), "v": p["v"]} for p in serie[-300:]],
+        "serie": [{"t": p["t"].isoformat(), "v": p["v"]} for p in serie[-750:]],
     }
     tmp = SAIDA.with_suffix(SAIDA.suffix + ".tmp")
     tmp.write_text(json.dumps(saida, ensure_ascii=False, indent=1), encoding="utf-8")

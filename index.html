@@ -41,6 +41,9 @@
     --critico: #a3261c;
     --critico-tinta: #ffffff;
     --agua-critica: #b3261e;
+    --haste: #d6e1dd;
+    --agua-baixa: #5f8a45;
+    --agua-cheia: #8b5a2b;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
@@ -54,6 +57,9 @@
       --critico: #e8857a;
       --critico-tinta: #2a0b08;
       --agua-critica: #d8453a;
+      --haste: #1d3832;
+      --agua-baixa: #6f9a52;
+      --agua-cheia: #a06a3a;
     }
   }
   :root[data-theme="dark"] {
@@ -67,6 +73,9 @@
     --critico: #e8857a;
     --critico-tinta: #2a0b08;
     --agua-critica: #d8453a;
+    --haste: #1d3832;
+    --agua-baixa: #6f9a52;
+    --agua-cheia: #a06a3a;
   }
 
   * { box-sizing: border-box; }
@@ -112,15 +121,16 @@
 
   .topo {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 132px;
-    gap: 16px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
     align-items: stretch;
   }
   @media (min-width: 720px) {
-    .topo { grid-template-columns: minmax(0, 1fr) 200px; gap: 48px; }
+    .topo { grid-template-columns: minmax(0, 1fr) 300px; gap: 40px; }
     main { padding-top: 24px; }
+    .leitura { min-height: 480px; }
   }
-  .leitura { display: flex; flex-direction: column; justify-content: flex-end; min-height: 400px; padding-bottom: 8px; }
+  .leitura { display: flex; flex-direction: column; justify-content: flex-end; padding-bottom: 8px; }
   h1 { font-size: clamp(2.5rem, 8.4vw, 5rem); line-height: 1.02; max-width: 13ch; text-wrap: balance; }
   .medida { margin: 20px 0 0; font-size: 1.25rem; font-weight: 500; }
   .tendencia { margin: 4px 0 0; color: var(--tinta-2); }
@@ -139,48 +149,63 @@
   .aviso[hidden] { display: none; }
 
   /* A regua: o elemento que da identidade a pagina */
-  .regua { position: relative; min-height: 400px; }
+  .regua { min-width: 0; }
+  .regua-titulo { margin: 0 0 14px; font-size: .75rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--tinta-2); }
+  .regua-corpo { position: relative; height: 430px; }
   .regua .haste {
     position: absolute;
-    top: 0; bottom: 0; left: 0;
-    width: 40px;
-    background: var(--esmalte);
+    top: 0; bottom: 0; left: 76px;
+    width: 44px;
+    background: var(--haste);
+    border: 1px solid var(--linha);
+    border-radius: 3px;
     overflow: hidden;
   }
-  .regua .traco { position: absolute; left: 0; height: 2px; background: var(--traco); transform: translateY(1px); }
   .regua .agua {
     position: absolute;
     left: 0; right: 0; bottom: 0;
-    background: var(--agua);
-    opacity: .88;
+    background: var(--agua-baixa);
+    opacity: .92;
     transform-origin: bottom;
-    transition: background-color .4s;
   }
   /* Acima da linha da passarela a agua fica vermelha. */
-  .regua .agua.critica { background: var(--agua-critica); opacity: .94; }
+  .regua .agua.critica { background: var(--agua-critica); }
   .regua .agua.sobe { animation: subir 1.1s cubic-bezier(.2, .7, .2, 1); }
   @keyframes subir { from { transform: scaleY(0); } }
-  /* Tracejado da media: sai um pouco dos dois lados da haste e se ve sobre a agua ou o esmalte. */
-  .regua .tracejado {
+  .regua .traco { position: absolute; right: 0; width: 12px; height: 1px; background: var(--tinta-2); z-index: 1; }
+  .regua .traco.maior { width: 100%; height: 1px; background: var(--tinta); opacity: .7; }
+  .regua .numero {
     position: absolute;
-    left: -8px;
-    width: 56px;
-    height: 3px;
-    transform: translateY(1.5px);
-    background: repeating-linear-gradient(90deg, var(--tinta) 0 6px, var(--esmalte) 6px 10px);
-    pointer-events: none;
+    left: 4px;
+    z-index: 1;
+    font-size: .75rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--tinta);
   }
-  .regua .marca {
+  .regua .atual {
     position: absolute;
-    left: 52px;
+    right: calc(100% - 70px);
     transform: translateY(50%);
-    font-size: .875rem;
-    line-height: 1.1;
-    color: var(--tinta-2);
+    font: 600 1.25rem/1 "Barlow Condensed", Barlow, sans-serif;
     white-space: nowrap;
   }
-  .regua .marca.ref { color: var(--tinta); font-weight: 600; }
-  @media (prefers-reduced-motion: reduce) { .regua .agua.sobe { animation: none; } .regua .agua { transition: none; } }
+  .regua .ref {
+    position: absolute;
+    left: 120px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transform: translateY(50%);
+    font-size: .9375rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .regua .ref::before { content: ""; width: 12px; height: 1px; background: var(--tinta-2); }
+  .regua .ref b { font-weight: 600; }
+  .regua .ref span { color: var(--tinta-2); }
+  .regua-legenda { margin: 14px 0 0; font-size: .875rem; color: var(--tinta-2); max-width: 46ch; }
+  @media (prefers-reduced-motion: reduce) { .regua .agua.sobe { animation: none; } }
 
   section { margin-top: 48px; }
   h2 { font-size: 1.75rem; line-height: 1.1; }
@@ -389,10 +414,11 @@
   <section aria-labelledby="titulo-grafico">
     <h2 id="titulo-grafico"></h2>
     <div class="periodos" role="group" id="periodos" data-i18n-aria="graf.periodo">
-      <button type="button" class="periodo" data-horas="24">24 h</button>
-      <button type="button" class="periodo" data-horas="48">48 h</button>
-      <button type="button" class="periodo" data-horas="96">96 h</button>
-      <button type="button" class="periodo" data-horas="168">168 h</button>
+      <button type="button" class="periodo" data-horas="24"></button>
+      <button type="button" class="periodo" data-horas="48"></button>
+      <button type="button" class="periodo" data-horas="168"></button>
+      <button type="button" class="periodo" data-horas="360"></button>
+      <button type="button" class="periodo" data-horas="720"></button>
     </div>
     <p class="apoio-grafico" id="apoio-grafico"></p>
     <div class="grafico" id="grafico">
@@ -517,8 +543,11 @@
       b.title = nome;
       b.setAttribute("aria-pressed", String(b.dataset.lang === P.idioma()));
     });
-    document.querySelectorAll(".periodo").forEach((b) => b.setAttribute("aria-pressed", String(Number(b.dataset.horas) === horas)));
-    $("titulo-grafico").textContent = t("graf.titulo", { h: horas });
+    document.querySelectorAll(".periodo").forEach((b) => {
+      b.textContent = P.nomePeriodo(Number(b.dataset.horas));
+      b.setAttribute("aria-pressed", String(Number(b.dataset.horas) === horas));
+    });
+    $("titulo-grafico").textContent = P.tituloPeriodo(horas);
     // A manchete so mostra "Carregando" antes da primeira leitura; depois quem escreve nela e mostrar().
     if (!dados && !erroCarga) $("manchete").textContent = t("carregando");
     $("rodape").textContent = t("rodape.texto", { e: dados ? dados.estacao : "65992502" });
@@ -536,47 +565,46 @@
     const raiz = $("regua");
     raiz.textContent = "";
     raiz.setAttribute("aria-label", t("regua.aria", { v: P.num(v), m: P.num(P.VAZAO_MEDIA) }));
-    const max = Math.max(12000, Math.ceil((v * 1.15) / 2000) * 2000);
+    const max = P.reguaMax(v);
     const pct = (x) => (x / max) * 100;
 
-    const haste = document.createElement("div");
-    haste.className = "haste";
-    for (let x = 0; x <= max; x += 500) {
-      const tr = document.createElement("div");
-      tr.className = "traco";
+    raiz.append(h("p", "regua-titulo", t("regua.titulo")));
+    const corpo = h("div", "regua-corpo");
+    const haste = h("div", "haste");
+    const agua = h("div", "agua" + (P.aguaCritica(v) ? " critica" : ""));
+    if (!P.aguaCritica(v)) {
+      agua.style.background = "color-mix(in oklab, var(--agua-cheia) " + Math.round(P.misturaAgua(v) * 100) + "%, var(--agua-baixa))";
+    }
+    haste.append(agua);
+    for (let x = 1000; x < max; x += 1000) {
+      const maior = x % 5000 === 0;
+      const tr = h("div", "traco" + (maior ? " maior" : ""));
       tr.style.bottom = pct(x) + "%";
-      tr.style.width = x % 2000 === 0 ? "100%" : "50%";
-      haste.appendChild(tr);
+      haste.append(tr);
+      if (maior) {
+        const n = h("span", "numero", String(x / 1000));
+        n.style.bottom = "calc(" + pct(x) + "% + 3px)";
+        haste.append(n);
+      }
     }
-    const agua = document.createElement("div");
-    agua.className = "agua" + (v >= P.VAZAO_PASSARELA ? " critica" : "");
-    haste.appendChild(agua);
-    raiz.appendChild(haste);
+    corpo.append(haste);
 
-    const media = document.createElement("div");
-    media.className = "tracejado";
-    media.style.bottom = pct(P.VAZAO_MEDIA) + "%";
-    raiz.appendChild(media);
+    const atual = h("span", "atual", P.num(v) + " ▶");
+    atual.style.bottom = pct(v) + "%";
+    corpo.append(atual);
 
-    const refs = [[P.VAZAO_MEDIA, t("regua.media")], [P.VAZAO_PASSARELA, t("regua.passarela")]];
-    const passo = max > 16000 ? 4000 : 2000;
-    for (let x = 0; x <= max; x += passo) {
-      if (refs.some(([r]) => Math.abs(pct(r) - pct(x)) < 5)) continue;
-      marca(raiz, pct(x), P.num(x), false);
-    }
-    refs.forEach(([r, nome]) => marca(raiz, pct(r), P.num(r) + " " + nome, true));
+    P.marcasRegua().forEach((m) => {
+      const r = h("span", "ref");
+      r.style.bottom = pct(m.v) + "%";
+      r.append(h("b", null, P.num(m.v)), h("span", null, m.nome));
+      corpo.append(r);
+    });
+    raiz.append(corpo, h("p", "regua-legenda", t("regua.legenda")));
+
     // A agua sobe so na primeira carga; nas atualizacoes seguintes ela ja aparece no nivel.
     agua.style.height = pct(v) + "%";
     if (!reguaDesenhada) agua.classList.add("sobe");
     reguaDesenhada = true;
-  }
-
-  function marca(raiz, bottom, texto, ref) {
-    const m = document.createElement("span");
-    m.className = ref ? "marca ref" : "marca";
-    m.style.bottom = bottom + "%";
-    m.textContent = texto;
-    raiz.appendChild(m);
   }
 
   function desenharGrafico() {
@@ -611,7 +639,7 @@
     }
 
     // Marcas do eixo do tempo: mais espacadas nos periodos longos e nas telas estreitas.
-    let passoH = horas <= 24 ? 6 : horas <= 48 ? 12 : 24;
+    let passoH = horas <= 24 ? 6 : horas <= 48 ? 12 : horas <= 168 ? 24 : horas <= 360 ? 72 : 120;
     if (L < 560) passoH *= 2;
     serie.forEach((p, i) => {
       const hBrt = Math.round(ts[i] / 3600e3) - 3;
@@ -625,9 +653,11 @@
     const pontos = serie.map((p, i) => x(ts[i]).toFixed(1) + "," + y(p.v).toFixed(1));
     el("polygon", { points: x(ini) + "," + y(0) + " " + pontos.join(" ") + " " + x(fim) + "," + y(0), fill: "var(--agua)", opacity: .14 }, svg);
 
-    [[P.VAZAO_MEDIA, t("graf.media", { v: P.num(P.VAZAO_MEDIA) })], [P.VAZAO_PASSARELA, t("graf.passarela", { v: P.num(P.VAZAO_PASSARELA) })]].forEach(([v, rot]) => {
-      el("line", { x1: m.e, x2: L - m.d, y1: y(v), y2: y(v), stroke: "var(--tinta)", "stroke-width": 1.5, "stroke-dasharray": "6 5" }, svg);
-      el("text", { class: "ref", x: m.e + 8, y: y(v) - 7 }, svg).textContent = rot;
+    // Media em tinta; limites das atracoes em vermelho. O nome da Garganta fica abaixo da linha, para nao bater no da passarela.
+    P.linhasGrafico().forEach((l) => {
+      if (l.v > topo) return;
+      el("line", { x1: m.e, x2: L - m.d, y1: y(l.v), y2: y(l.v), stroke: l.limite ? "var(--critico)" : "var(--tinta)", "stroke-width": 1.5, "stroke-dasharray": "6 5" }, svg);
+      el("text", { class: "ref", x: m.e + 8, y: l.abaixo ? y(l.v) + 16 : y(l.v) - 7 }, svg).textContent = l.rotulo;
     });
 
     el("polyline", { points: pontos.join(" "), fill: "none", stroke: "var(--agua)", "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
@@ -901,7 +931,7 @@
   document.querySelectorAll(".periodo").forEach((b) => b.addEventListener("click", () => {
     horas = Number(b.dataset.horas);
     guardar("regua.horas", String(horas));
-    evento("grafico-" + horas + "h");
+    evento("grafico-" + horas / 24 + "dias");
     aplicarTextos();
     if (dados) desenharGrafico();
   }));
@@ -945,7 +975,7 @@
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
 
   const horasGuardadas = Number(guardado("regua.horas"));
-  if ([24, 48, 96, 168].includes(horasGuardadas)) horas = horasGuardadas;
+  if (P.PERIODOS.includes(horasGuardadas)) horas = horasGuardadas;
   P.definirIdioma(guardado("regua.idioma") || P.detectarIdioma(navigator.languages || [navigator.language]));
   aplicarTextos();
   carregar();

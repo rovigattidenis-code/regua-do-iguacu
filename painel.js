@@ -112,10 +112,36 @@
     return t(tendencia === "subindo" ? "alerta.subindo" : "alerta.acima", { lim: num(VAZAO_PASSARELA) });
   }
 
+  // O grafico vai pelo menos ate 12.000, para a linha dos circuitos (11.000) sempre aparecer.
   function eixoMax(valores) {
-    const pico = Math.max(VAZAO_PASSARELA, ...valores);
-    return Math.ceil((pico * 1.1) / 1000) * 1000;
+    const pico = Math.max(...valores, 0);
+    return Math.max(12000, Math.ceil((pico * 1.1) / 1000) * 1000);
   }
+
+  // Regua: a agua vai do verde (0) ao barrento (1) entre o minimo cenico e 8.000; a partir dai fica vermelha.
+  const VAZAO_CENICA = 350;
+  // Curva cubica: a agua continua verde na maior parte da escala e escurece perto de 8.000.
+  const misturaAgua = (v) => Math.min(1, Math.max(0, (v - VAZAO_CENICA) / (VAZAO_PASSARELA - VAZAO_CENICA))) ** 3;
+  const aguaCritica = (v) => v >= VAZAO_PASSARELA;
+  const reguaMax = (v) => Math.max(18000, Math.ceil((v * 1.1) / 1000) * 1000);
+  const MARCAS_REGUA = [
+    { id: "pico", v: 17700 }, { id: "circuitos", v: 11000 }, { id: "passarela", v: 8000 },
+    { id: "garganta", v: 7000 }, { id: "media", v: 1500 }, { id: "cenico", v: 350 },
+  ];
+  const marcasRegua = () => MARCAS_REGUA.map((m) => ({ ...m, nome: t("regua." + m.id) }));
+
+  // Linhas tracejadas do grafico: a media e o limite de cada atracao.
+  const LINHAS_GRAFICO = [
+    { id: "media", v: 1500, limite: false },
+    { id: "garganta", v: 7000, limite: true, abaixo: true },
+    { id: "passarela", v: 8000, limite: true },
+    { id: "circuitos", v: 11000, limite: true },
+  ];
+  const linhasGrafico = () => LINHAS_GRAFICO.map((l) => ({ ...l, rotulo: t("graf." + l.id, { v: num(l.v) }) }));
+
+  const PERIODOS = [24, 48, 168, 360, 720];
+  const nomePeriodo = (h) => (h === 24 ? t("periodo.dia") : t("periodo.dias", { n: h / 24 }));
+  const tituloPeriodo = (h) => (h === 24 ? t("graf.titulo24") : t("graf.tituloDias", { n: h / 24 }));
 
   const dia = (iso) =>
     new Intl.DateTimeFormat(LOCALE[lang], { timeZone: FUSO, day: "2-digit", month: "2-digit" }).format(new Date(iso));
@@ -270,5 +296,6 @@
     num, comSinal, nivel, manchete, fraseTendencia, atrasoMin, dadoAtrasado, alertaPassarela, eixoMax,
     dia, hora, formatarHora, horaLocal, textoAtraso, qualidade, piscinas, formatarVazao, ritmo24h, recorteSerie,
     estadoAtracao, projecao, lerCSV, lerRelatos, textoCompartilhar, linkWhatsApp,
+    misturaAgua, aguaCritica, reguaMax, marcasRegua, linhasGrafico, PERIODOS, nomePeriodo, tituloPeriodo,
   };
 });

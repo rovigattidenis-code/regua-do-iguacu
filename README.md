@@ -7,7 +7,7 @@ Página pública com a vazão do Rio Iguaçu na estação Hotel Cataratas (ANA 6
 1. A cada hora, o GitHub roda o `ana_vazao.py`, que busca os dados na ANA e grava o `vazao.json`.
 2. O `index.html` lê esse arquivo e desenha a régua, o gráfico e os números.
 
-A página abre no idioma do aparelho (português, inglês, espanhol ou francês), e as bandeiras no topo trocam o idioma à mão. Os textos ficam em `idiomas.js`: ao mudar uma frase, mude nos quatro idiomas. O gráfico mostra 24, 48, 96 ou 168 horas, e o script busca 7 dias na ANA.
+A página abre no idioma do aparelho (português, inglês, espanhol ou francês), e as bandeiras no topo trocam o idioma à mão. Os textos ficam em `idiomas.js`: ao mudar uma frase, mude nos quatro idiomas. O gráfico mostra 1, 2, 7, 15 ou 30 dias, com as linhas da média e dos limites de cada atração, e o script busca 30 dias na ANA.
 
 A primeira versão continua no ar em `/v1/` e guardada no Git com a marca `v1`.
 
@@ -35,7 +35,7 @@ Um relato de fechamento vale por 12 horas. Se marcar "Sem previsão de reabertur
 
 ## Visitas
 
-As visitas são contadas de forma anônima, sem cookies, pelo GoatCounter, no painel `https://regua-iguacu.goatcounter.com`. Os cliques nos botões aparecem como eventos: `compartilhar-whatsapp`, `atalho-clique`, `atalho-criado`, `idioma-xx`, `grafico-XXh` e `simulacao`.
+As visitas são contadas de forma anônima, sem cookies, pelo GoatCounter, no painel `https://regua-iguacu.goatcounter.com`. Os cliques nos botões aparecem como eventos: `compartilhar-whatsapp`, `atalho-clique`, `atalho-criado`, `idioma-xx`, `grafico-Ndias` e `simulacao`.
 
 Para saber de qual grupo vieram as visitas, compartilhe o link com `?ref=` no fim, por exemplo `https://rovigattidenis-code.github.io/regua-do-iguacu/?ref=familia`. O nome aparece no painel como origem da visita.
 
