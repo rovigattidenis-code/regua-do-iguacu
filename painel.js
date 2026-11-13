@@ -182,6 +182,9 @@
   }
   // Texto gravado nos prints do grafico: de onde veio e de quando e a leitura.
   const textoMarca = (d, url) => t("marca.texto", { url, t: formatarHora(d.medicao) });
+  // Inscricao nas novidades: a pessoa manda a mensagem pronta para o WhatsApp do Denis.
+  const WHATSAPP_DENIS = "5545998411964";
+  const linkInscricao = () => "https://wa.me/" + WHATSAPP_DENIS + "?text=" + encodeURIComponent(t("inscr.mensagem"));
   const linkWhatsApp = (texto) => "https://wa.me/?text=" + encodeURIComponent(texto);
 
   // Leituras das ultimas `horas` horas, contadas a partir da leitura mais recente.
@@ -297,7 +300,7 @@
     t, definirIdioma, idioma, detectarIdioma, nomeAtracao, nomeReferencia, rotuloSituacao,
     num, comSinal, nivel, manchete, fraseTendencia, atrasoMin, dadoAtrasado, alertaPassarela, eixoMax,
     dia, hora, formatarHora, horaLocal, textoAtraso, qualidade, piscinas, formatarVazao, ritmo24h, recorteSerie,
-    estadoAtracao, projecao, lerCSV, lerRelatos, textoCompartilhar, linkWhatsApp, textoMarca,
+    estadoAtracao, projecao, lerCSV, lerRelatos, textoCompartilhar, linkWhatsApp, textoMarca, linkInscricao,
     misturaAgua, aguaCritica, reguaMax, marcasRegua, linhasGrafico, PERIODOS, nomePeriodo, tituloPeriodo,
   };
 });

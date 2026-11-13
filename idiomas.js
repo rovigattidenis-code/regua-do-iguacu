@@ -167,6 +167,11 @@
     "guia.passo3": "Role a lista para baixo e toque em Adicionar à Tela de Início.",
     "guia.passo4": "Toque em Adicionar. O ícone da Régua aparece na sua tela.",
     "guia.fechar": "Entendi",
+    "inscr.titulo": "Fique sabendo antes de todo mundo",
+    "inscr.texto": "Receba no WhatsApp as novidades da Régua do Iguaçu: avisos importantes de cheia, melhorias na página e os próximos projetos, como o alerta antecipado por Capanema. Grátis durante a versão de teste.",
+    "inscr.botao": "Quero receber as novidades",
+    "inscr.nota": "O botão abre o WhatsApp com a mensagem pronta; é só enviar. Ao enviar, você aceita receber novidades da Régua do Iguaçu. Para sair, responda SAIR.",
+    "inscr.mensagem": "Olá! Quero receber as novidades da Régua do Iguaçu.",
   };
 
   const en = {
@@ -332,6 +337,11 @@
     "guia.passo3": "Scroll down the list and tap Add to Home Screen.",
     "guia.passo4": "Tap Add. The Régua icon appears on your screen.",
     "guia.fechar": "Got it",
+    "inscr.titulo": "Be the first to know",
+    "inscr.texto": "Get Régua do Iguaçu updates on WhatsApp: important flood alerts, page improvements and upcoming projects, such as the early alert from Capanema. Free during the test version.",
+    "inscr.botao": "I want to get the updates",
+    "inscr.nota": "The button opens WhatsApp with the message ready; just send it. By sending it, you agree to receive Régua do Iguaçu updates. To stop, reply STOP.",
+    "inscr.mensagem": "Hi! I'd like to receive the Régua do Iguaçu updates.",
   };
 
   const es = {
@@ -497,6 +507,11 @@
     "guia.passo3": "Desplácese hacia abajo y toque Agregar a inicio.",
     "guia.passo4": "Toque Agregar. El ícono de la Régua aparece en su pantalla.",
     "guia.fechar": "Entendido",
+    "inscr.titulo": "Entérese antes que nadie",
+    "inscr.texto": "Reciba por WhatsApp las novedades de la Régua do Iguaçu: avisos importantes de crecida, mejoras en la página y los próximos proyectos, como la alerta anticipada desde Capanema. Gratis durante la versión de prueba.",
+    "inscr.botao": "Quiero recibir las novedades",
+    "inscr.nota": "El botón abre WhatsApp con el mensaje listo; solo envíelo. Al enviarlo, acepta recibir novedades de la Régua do Iguaçu. Para salir, responda SALIR.",
+    "inscr.mensagem": "¡Hola! Quiero recibir las novedades de la Régua do Iguaçu.",
   };
 
   const fr = {
@@ -662,6 +677,11 @@
     "guia.passo3": "Faites défiler la liste et touchez Sur l'écran d'accueil.",
     "guia.passo4": "Touchez Ajouter. L'icône de la Régua apparaît sur votre écran.",
     "guia.fechar": "Compris",
+    "inscr.titulo": "Soyez informé avant tout le monde",
+    "inscr.texto": "Recevez sur WhatsApp les nouveautés de la Régua do Iguaçu : alertes importantes de crue, améliorations de la page et prochains projets, comme l'alerte anticipée depuis Capanema. Gratuit pendant la version de test.",
+    "inscr.botao": "Je veux recevoir les nouveautés",
+    "inscr.nota": "Le bouton ouvre WhatsApp avec le message prêt ; il suffit de l'envoyer. En l'envoyant, vous acceptez de recevoir les nouveautés de la Régua do Iguaçu. Pour arrêter, répondez STOP.",
+    "inscr.mensagem": "Bonjour ! Je souhaite recevoir les nouveautés de la Régua do Iguaçu.",
   };
 
   return { pt, en, es, fr };

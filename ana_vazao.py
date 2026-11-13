@@ -176,6 +176,34 @@ def calcular(serie):
     return ult, var24, taxa, janela_h, tend, qual
 
 
+HISTORICO_HORAS = 720  # 30 dias de leituras no grafico
+
+
+def mesclar_serie(antiga, nova, horas=HISTORICO_HORAS):
+    """Junta o historico ja publicado com as leituras novas.
+
+    Quando a ANA demora e o script recua para 2 ou 7 dias, o grafico nao perde o
+    resto dos 30 dias. Leitura nova do mesmo horario substitui a antiga.
+    """
+    pontos = {}
+    for p in list(antiga) + list(nova):
+        try:
+            pontos[datetime.fromisoformat(p["t"])] = p["v"]
+        except (KeyError, TypeError, ValueError):
+            continue
+    if not pontos:
+        return []
+    corte = max(pontos) - timedelta(hours=horas)
+    return [{"t": t.isoformat(), "v": pontos[t]} for t in sorted(pontos) if t >= corte]
+
+
+def serie_publicada():
+    try:
+        return json.loads(SAIDA.read_text(encoding="utf-8")).get("serie") or []
+    except (OSError, ValueError, AttributeError):
+        return []
+
+
 def main():
     agora = datetime.now(BRT)
     itens, rng = buscar_com_fallback(agora.strftime("%Y-%m-%d"))
@@ -199,7 +227,7 @@ def main():
         "range_usado": rng,
         "gerado_em": agora.isoformat(timespec="seconds"),
         "atraso_min": int((agora - ult["t"]).total_seconds() // 60),
-        "serie": [{"t": p["t"].isoformat(), "v": p["v"]} for p in serie[-750:]],
+        "serie": mesclar_serie(serie_publicada(), [{"t": p["t"].isoformat(), "v": p["v"]} for p in serie]),
     }
     tmp = SAIDA.with_suffix(SAIDA.suffix + ".tmp")
     tmp.write_text(json.dumps(saida, ensure_ascii=False, indent=1), encoding="utf-8")

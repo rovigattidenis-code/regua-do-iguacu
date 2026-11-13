@@ -65,3 +65,12 @@ test("marca d'agua traz o nome, o endereco e a hora da leitura", () => {
   p.definirIdioma("en");
   assert.match(p.textoMarca({ medicao: "2026-11-13T10:00:00-03:00" }, url), /reading from 11\/13, 10:00$/);
 });
+
+test("inscricao abre o WhatsApp do Denis com a mensagem no idioma", () => {
+  assert.strictEqual(
+    p.linkInscricao(),
+    "https://wa.me/5545998411964?text=" + encodeURIComponent("Olá! Quero receber as novidades da Régua do Iguaçu.")
+  );
+  p.definirIdioma("es");
+  assert.match(decodeURIComponent(p.linkInscricao()), /Quiero recibir las novedades/);
+});

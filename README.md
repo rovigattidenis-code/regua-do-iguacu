@@ -35,7 +35,7 @@ Um relato de fechamento vale por 12 horas. Se marcar "Sem previsão de reabertur
 
 ## Visitas
 
-As visitas são contadas de forma anônima, sem cookies, pelo GoatCounter, no painel `https://regua-iguacu.goatcounter.com`. Os cliques nos botões aparecem como eventos: `compartilhar-whatsapp`, `atalho-clique`, `atalho-criado`, `idioma-xx`, `grafico-Ndias` e `simulacao`.
+As visitas são contadas de forma anônima, sem cookies, pelo GoatCounter, no painel `https://regua-iguacu.goatcounter.com`. Os cliques nos botões aparecem como eventos: `compartilhar-whatsapp`, `atalho-clique`, `atalho-criado`, `atalho-guia-iphone`, `inscricao-novidades`, `idioma-xx`, `grafico-Ndias` e `simulacao`.
 
 Para saber de qual grupo vieram as visitas, compartilhe o link com `?ref=` no fim, por exemplo `https://rovigattidenis-code.github.io/regua-do-iguacu/?ref=familia`. O nome aparece no painel como origem da visita.
 
