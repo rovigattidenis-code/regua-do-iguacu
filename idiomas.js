@@ -156,6 +156,9 @@
     "periodo.dias": "{n} dias",
     "graf.titulo24": "Últimas 24 horas",
     "graf.tituloDias": "Últimos {n} dias",
+    "marca.texto": "Régua do Iguaçu, {url}, leitura de {t}",
+    "qr.texto": "Aponte a câmera do celular para abrir a Régua do Iguaçu.",
+    "qr.alt": "QR code com o link da Régua do Iguaçu",
   };
 
   const en = {
@@ -310,6 +313,9 @@
     "periodo.dias": "{n} days",
     "graf.titulo24": "Last 24 hours",
     "graf.tituloDias": "Last {n} days",
+    "marca.texto": "Régua do Iguaçu, {url}, reading from {t}",
+    "qr.texto": "Point your phone camera here to open the Régua do Iguaçu.",
+    "qr.alt": "QR code with the link to the Régua do Iguaçu",
   };
 
   const es = {
@@ -464,6 +470,9 @@
     "periodo.dias": "{n} días",
     "graf.titulo24": "Últimas 24 horas",
     "graf.tituloDias": "Últimos {n} días",
+    "marca.texto": "Régua do Iguaçu, {url}, lectura del {t}",
+    "qr.texto": "Apunte la cámara del celular para abrir la Régua do Iguaçu.",
+    "qr.alt": "Código QR con el enlace a la Régua do Iguaçu",
   };
 
   const fr = {
@@ -618,6 +627,9 @@
     "periodo.dias": "{n} jours",
     "graf.titulo24": "Dernières 24 heures",
     "graf.tituloDias": "{n} derniers jours",
+    "marca.texto": "Régua do Iguaçu, {url}, relevé du {t}",
+    "qr.texto": "Pointez l'appareil photo de votre téléphone pour ouvrir la Régua do Iguaçu.",
+    "qr.alt": "QR code avec le lien vers la Régua do Iguaçu",
   };
 
   return { pt, en, es, fr };

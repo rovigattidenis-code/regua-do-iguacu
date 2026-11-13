@@ -55,3 +55,13 @@ test("periodos do grafico e seus nomes", () => {
   p.definirIdioma("fr");
   assert.strictEqual(p.tituloPeriodo(168), "7 derniers jours");
 });
+
+test("marca d'agua traz o nome, o endereco e a hora da leitura", () => {
+  const url = "rovigattidenis-code.github.io/regua-do-iguacu";
+  assert.strictEqual(
+    p.textoMarca({ medicao: "2026-11-13T10:00:00-03:00" }, url),
+    "Régua do Iguaçu, rovigattidenis-code.github.io/regua-do-iguacu, leitura de 13/11, 10:00"
+  );
+  p.definirIdioma("en");
+  assert.match(p.textoMarca({ medicao: "2026-11-13T10:00:00-03:00" }, url), /reading from 11\/13, 10:00$/);
+});

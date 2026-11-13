@@ -39,6 +39,12 @@ As visitas são contadas de forma anônima, sem cookies, pelo GoatCounter, no pa
 
 Para saber de qual grupo vieram as visitas, compartilhe o link com `?ref=` no fim, por exemplo `https://rovigattidenis-code.github.io/regua-do-iguacu/?ref=familia`. O nome aparece no painel como origem da visita.
 
+## QR code e prints
+
+O `qrcode.svg` abre `https://rovigattidenis-code.github.io/regua-do-iguacu/?ref=qrcode`, e as visitas por ele aparecem no GoatCounter com a origem `qrcode`. Se o endereço do site mudar, o QR precisa ser gerado de novo.
+
+Não é possível impedir um print de tela num site. Em vez disso, o gráfico leva uma marca d'água com o nome, o endereço e a hora da leitura, e a impressão em papel ou PDF mostra o QR e os créditos.
+
 ## Ver e testar no computador
 
 ```bash

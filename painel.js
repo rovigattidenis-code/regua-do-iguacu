@@ -180,6 +180,8 @@
     if (!d) return t("compartilhar.sem", { url });
     return t("compartilhar.texto", { manchete: manchete(d.vazao_m3s), v: formatarVazao(d.vazao_m3s, "m3"), url });
   }
+  // Texto gravado nos prints do grafico: de onde veio e de quando e a leitura.
+  const textoMarca = (d, url) => t("marca.texto", { url, t: formatarHora(d.medicao) });
   const linkWhatsApp = (texto) => "https://wa.me/?text=" + encodeURIComponent(texto);
 
   // Leituras das ultimas `horas` horas, contadas a partir da leitura mais recente.
@@ -295,7 +297,7 @@
     t, definirIdioma, idioma, detectarIdioma, nomeAtracao, nomeReferencia, rotuloSituacao,
     num, comSinal, nivel, manchete, fraseTendencia, atrasoMin, dadoAtrasado, alertaPassarela, eixoMax,
     dia, hora, formatarHora, horaLocal, textoAtraso, qualidade, piscinas, formatarVazao, ritmo24h, recorteSerie,
-    estadoAtracao, projecao, lerCSV, lerRelatos, textoCompartilhar, linkWhatsApp,
+    estadoAtracao, projecao, lerCSV, lerRelatos, textoCompartilhar, linkWhatsApp, textoMarca,
     misturaAgua, aguaCritica, reguaMax, marcasRegua, linhasGrafico, PERIODOS, nomePeriodo, tituloPeriodo,
   };
 });

@@ -204,6 +204,21 @@
   .regua .ref::before { content: ""; width: 12px; height: 1px; background: var(--tinta-2); }
   .regua .ref b { font-weight: 600; }
   .regua .ref span { color: var(--tinta-2); }
+  .coluna-regua { min-width: 0; }
+  /* QR code: fica no fundo branco para a camera conseguir ler em qualquer tema. */
+  .qr { display: flex; align-items: center; gap: 14px; margin-top: 20px; color: inherit; text-decoration: none; font-size: .875rem; line-height: 1.35; }
+  .qr img { flex: none; padding: 6px; background: #fff; border-radius: 4px; }
+  .qr small { display: block; margin-top: 4px; color: var(--tinta-2); overflow-wrap: anywhere; }
+  .grafico text.marca { font-size: 11px; fill: var(--tinta-2); opacity: .7; }
+
+  /* Impressao em papel ou PDF: tira os botoes e deixa o QR, a marca e os creditos. */
+  @media print {
+    .acoes-topo, .idiomas, .dica-atalho, .periodos, .unidade, details, .simulacao, .registrar, .botao { display: none !important; }
+    body { background: #fff; color: #000; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    section, .topo { break-inside: avoid; }
+    footer a::after { content: " (" attr(href) ")"; }
+  }
   .regua-legenda { margin: 14px 0 0; font-size: .875rem; color: var(--tinta-2); max-width: 46ch; }
   @media (prefers-reduced-motion: reduce) { .regua .agua.sobe { animation: none; } }
 
@@ -408,7 +423,16 @@
       </p>
       <a class="registrar" id="link-registrar" href="#ocorrencias" data-i18n="link.registrar" hidden>Registrar ocorrência</a>
     </div>
-    <div class="regua" id="regua" role="img"></div>
+    <div class="coluna-regua">
+      <div class="regua" id="regua" role="img"></div>
+      <a class="qr" href="https://rovigattidenis-code.github.io/regua-do-iguacu/?ref=qrcode">
+        <img src="qrcode.svg" width="112" height="112" alt="QR code com o link da Régua do Iguaçu" data-i18n-alt="qr.alt">
+        <span>
+          <span data-i18n="qr.texto">Aponte a câmera do celular para abrir a Régua do Iguaçu.</span>
+          <small>rovigattidenis-code.github.io/regua-do-iguacu</small>
+        </span>
+      </a>
+    </div>
   </div>
 
   <section aria-labelledby="titulo-grafico">
@@ -537,6 +561,7 @@
     document.documentElement.lang = LOCALE[P.idioma()];
     document.querySelectorAll("[data-i18n]").forEach((n) => { n.textContent = t(n.dataset.i18n); });
     document.querySelectorAll("[data-i18n-aria]").forEach((n) => n.setAttribute("aria-label", t(n.dataset.i18nAria)));
+    document.querySelectorAll("[data-i18n-alt]").forEach((n) => n.setAttribute("alt", t(n.dataset.i18nAlt)));
     document.querySelectorAll(".bandeira").forEach((b) => {
       const nome = window.ReguaIdiomas[b.dataset.lang]["idioma.nome"];
       b.setAttribute("aria-label", nome);
@@ -611,8 +636,10 @@
     const serie = P.recorteSerie(dados.serie, horas);
     const svg = $("grafico-svg");
     const L = $("grafico").clientWidth;
-    const A = L < 560 ? 280 : 340;
-    const m = { e: 48, d: 12, t: 12, b: 28 };
+    // Faixa de baixo: datas do eixo e, embaixo delas, a marca d'agua (uma linha, ou duas em tela estreita).
+    const linhasMarcaN = L < 560 ? 2 : 1;
+    const A = (L < 560 ? 280 : 340) + linhasMarcaN * 14;
+    const m = { e: 48, d: 12, t: 12, b: 28 + linhasMarcaN * 14 };
     svg.textContent = "";
     svg.setAttribute("viewBox", "0 0 " + L + " " + A);
     svg.setAttribute("height", A);
@@ -646,7 +673,7 @@
       if (((hBrt % passoH) + passoH) % passoH !== 0) return;
       const hl = P.horaLocal(p.t);
       el("line", { x1: x(ts[i]), x2: x(ts[i]), y1: A - m.b, y2: A - m.b + 5, stroke: "var(--tinta-2)" }, svg);
-      const tx = el("text", { x: x(ts[i]), y: A - 8, "text-anchor": "middle" }, svg);
+      const tx = el("text", { x: x(ts[i]), y: A - m.b + 20, "text-anchor": "middle" }, svg);
       tx.textContent = hl === 0 ? P.dia(p.t) : t("eixo.hora", { h: hl });
     });
 
@@ -661,6 +688,13 @@
     });
 
     el("polyline", { points: pontos.join(" "), fill: "none", stroke: "var(--agua)", "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }, svg);
+    // Marca d'agua: em telas estreitas vai em duas linhas (nome e endereco; hora da leitura).
+    const marca = P.textoMarca(dados, "rovigattidenis-code.github.io/regua-do-iguacu");
+    const partes = marca.split(", ");
+    const linhasMarca = linhasMarcaN === 2 ? [partes.slice(0, 2).join(", "), partes.slice(2).join(", ")] : [marca];
+    linhasMarca.forEach((texto, i) => {
+      el("text", { class: "marca", x: L - m.d, y: A - (linhasMarca.length - 1 - i) * 14 - 4, "text-anchor": "end" }, svg).textContent = texto;
+    });
     const ult = serie.length - 1;
     el("circle", { cx: x(ts[ult]), cy: y(vs[ult]), r: 5, fill: "var(--agua)", stroke: "var(--nevoa)", "stroke-width": 2 }, svg);
 
