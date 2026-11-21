@@ -36,5 +36,26 @@ class MesclarSerie(unittest.TestCase):
         self.assertEqual(a.mesclar_serie([], [ponto(1, 5)], horas=720), [ponto(1, 5)])
 
 
+def item(hora, chuva, vazao=5000.0):
+    t = datetime(2026, 11, 20, 0) + timedelta(hours=hora)
+    return {"Data_Hora_Medicao": t.strftime("%Y-%m-%d %H:%M:%S.0"), "Chuva_Adotada": str(chuva),
+            "Vazao_Adotada": str(vazao), "Vazao_Adotada_Status": "0"}
+
+
+class ResumoMontante(unittest.TestCase):
+    def test_soma_a_chuva_das_ultimas_24_horas(self):
+        itens = [item(h, 2.0) for h in range(0, 30)]
+        r = a.resumir_montante(itens)
+        self.assertEqual(r["chuva_24h_mm"], 48.0)
+        self.assertEqual(r["medicao"], "2026-11-21T05:00:00-03:00")
+
+    def test_traz_a_ultima_vazao(self):
+        itens = [item(1, 0, 4000.0), item(2, 0, 4100.0)]
+        self.assertEqual(a.resumir_montante(itens)["vazao_m3s"], 4100.0)
+
+    def test_sem_itens_devolve_nada(self):
+        self.assertIsNone(a.resumir_montante([]))
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -39,6 +39,10 @@ As visitas são contadas de forma anônima, sem cookies, pelo GoatCounter, no pa
 
 Para saber de qual grupo vieram as visitas, compartilhe o link com `?ref=` no fim, por exemplo `https://rovigattidenis-code.github.io/regua-do-iguacu/?ref=familia`. O nome aparece no painel como origem da visita.
 
+## Painel do dia
+
+Abaixo da régua, o painel junta a previsão do tempo de Foz (Open-Meteo), a chuva das últimas 24 h em Porto Capanema (ANA, estação 65987000) e a vazão. A partir das 19h ele mostra o dia seguinte. A sugestão do dia e o arco-íris são regras simples, em `painel.js` (`sugestaoDia` e `resumoClima`). O Open-Meteo gratuito é para uso não comercial: antes de cobrar por um plano Pro, troque a fonte ou contrate o plano comercial.
+
 ## QR code e prints
 
 O `qrcode.svg` abre `https://rovigattidenis-code.github.io/regua-do-iguacu/?ref=qrcode`, e as visitas por ele aparecem no GoatCounter com a origem `qrcode`. Se o endereço do site mudar, o QR precisa ser gerado de novo.

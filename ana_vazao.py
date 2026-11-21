@@ -49,6 +49,9 @@ SAIDA = Path(os.environ.get("SAIDA", str(HERE / "vazao.json")))
 # Janelas tentadas em ordem. A primeira que devolver dados e usada.
 RANGES = [r.strip() for r in os.environ.get("RANGES", "DIAS_30,DIAS_14,DIAS_7,DIAS_2,HORA_24,HORA_2").split(",") if r.strip()]
 TOKEN_TTL_MIN = int(os.environ.get("TOKEN_TTL_MIN", "50"))
+# Estacao rio acima: a chuva e a vazao de la ajudam a antecipar o que chega nas Cataratas.
+ESTACAO_MONTANTE = os.environ.get("ESTACAO_MONTANTE", "65987000")
+NOME_MONTANTE = os.environ.get("NOME_MONTANTE", "Porto Capanema")
 CACHE = HERE / ".token_cache.json"
 LOG = HERE / "erro.log"
 
@@ -86,9 +89,9 @@ def obter_token(forcar=False):
     return token
 
 
-def buscar_itens(token, rng, data_busca):
+def buscar_itens(token, rng, data_busca, estacao=None):
     params = {
-        "Código da Estação": ESTACAO,
+        "Código da Estação": estacao or ESTACAO,
         "Tipo Filtro Data": "DATA_LEITURA",
         "Data de Busca (yyyy-MM-dd)": data_busca,
         "Range Intervalo de busca": rng,
@@ -179,6 +182,39 @@ def calcular(serie):
 HISTORICO_HORAS = 720  # 30 dias de leituras no grafico
 
 
+def resumir_montante(itens):
+    """Chuva das ultimas 24 h e ultima vazao da estacao rio acima."""
+    pontos = []
+    for it in itens:
+        bruto = it.get("Data_Hora_Medicao")
+        if not bruto:
+            continue
+        t = datetime.strptime(bruto[:19], "%Y-%m-%d %H:%M:%S").replace(tzinfo=BRT)
+        pontos.append((t, numero(it.get("Chuva_Adotada")), numero(it.get("Vazao_Adotada"))))
+    if not pontos:
+        return None
+    pontos.sort()
+    ult = pontos[-1][0]
+    chuva = sum(c for t, c, _ in pontos if c is not None and t > ult - timedelta(hours=24))
+    vazoes = [v for _, _, v in pontos if v is not None]
+    return {
+        "estacao": ESTACAO_MONTANTE,
+        "nome": NOME_MONTANTE,
+        "chuva_24h_mm": round(chuva, 1),
+        "vazao_m3s": vazoes[-1] if vazoes else None,
+        "medicao": ult.isoformat(),
+    }
+
+
+def buscar_montante(data_busca):
+    # Se a estacao rio acima falhar, o painel so fica sem esse dado; a vazao das Cataratas segue normal.
+    try:
+        return resumir_montante(buscar_itens(obter_token(), "DIAS_2", data_busca, ESTACAO_MONTANTE))
+    except Exception as e:
+        print("Sem dados de %s: %s" % (NOME_MONTANTE, e), file=sys.stderr)
+        return None
+
+
 def mesclar_serie(antiga, nova, horas=HISTORICO_HORAS):
     """Junta o historico ja publicado com as leituras novas.
 
@@ -227,6 +263,7 @@ def main():
         "range_usado": rng,
         "gerado_em": agora.isoformat(timespec="seconds"),
         "atraso_min": int((agora - ult["t"]).total_seconds() // 60),
+        "montante": buscar_montante(agora.strftime("%Y-%m-%d")),
         "serie": mesclar_serie(serie_publicada(), [{"t": p["t"].isoformat(), "v": p["v"]} for p in serie]),
     }
     tmp = SAIDA.with_suffix(SAIDA.suffix + ".tmp")

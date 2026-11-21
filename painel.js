@@ -182,6 +182,82 @@
   }
   // Texto gravado nos prints do grafico: de onde veio e de quando e a leitura.
   const textoMarca = (d, url) => t("marca.texto", { url, t: formatarHora(d.medicao) });
+  // ---------- Painel do dia: clima de Foz e sugestao ----------
+  const URL_CLIMA = "https://api.open-meteo.com/v1/forecast?latitude=-25.6953&longitude=-54.4367" +
+    "&hourly=temperature_2m,apparent_temperature,precipitation_probability,weather_code,uv_index,cloud_cover,relative_humidity_2m,wind_speed_10m,surface_pressure" +
+    "&daily=sunrise,sunset&timezone=America%2FSao_Paulo&forecast_days=2";
+  const ehRaio = (x) => x.cod >= 95;
+  const ehChuvoso = (x) => x.chuva >= 50 || x.cod >= 61;
+
+  // Primeira e ultima hora (exclusiva) em que a condicao vale, entre as horas dadas.
+  function janela(horas, cond) {
+    const sim = horas.filter(cond);
+    return sim.length ? { ini: sim[0].h, fim: sim[sim.length - 1].h + 1 } : null;
+  }
+
+  function resumoClima(om, hoje, horaAtual) {
+    const H = om.hourly;
+    const todas = H.time
+      .map((t, i) => ({
+        dia: t.slice(0, 10), h: Number(t.slice(11, 13)),
+        temp: H.temperature_2m[i], sens: H.apparent_temperature[i], chuva: H.precipitation_probability[i],
+        cod: H.weather_code[i], uv: H.uv_index[i], nuvens: H.cloud_cover[i],
+        umidade: H.relative_humidity_2m[i], vento: H.wind_speed_10m[i], pressao: H.surface_pressure[i],
+      }))
+      .filter((x) => x.dia === hoje);
+    const entre = (a, b) => todas.filter((x) => x.h >= a && x.h <= b);
+    const iDia = (om.daily.time || []).indexOf(hoje);
+    // Arco-iris: estimativa simples para o lado brasileiro, manha de sol no horario do parque.
+    const arcoIris = janela(entre(9, 11), (x) => x.chuva < 30 && x.nuvens < 60 && x.cod < 51);
+    const atual = todas.reduce((m, x) => (!m || Math.abs(x.h - horaAtual) < Math.abs(m.h - horaAtual) ? x : m), null);
+    return {
+      todas,
+      horas: [6, 8, 10, 12, 14, 16, 18, 20].map((h) => todas.find((x) => x.h === h)).filter(Boolean)
+        .map((x) => ({ ...x, raio: ehRaio(x), arco: !!arcoIris && x.h >= arcoIris.ini && x.h < arcoIris.fim })),
+      raios: janela(entre(6, 21), ehRaio),
+      chuva: janela(entre(6, 21), (x) => x.chuva >= 60 || x.cod >= 61),
+      arcoIris,
+      sensMax: Math.max(...entre(9, 17).map((x) => x.sens)),
+      tempMax: Math.max(...entre(9, 17).map((x) => x.temp)),
+      uvMax: Math.max(...todas.map((x) => x.uv)),
+      atual,
+      altitude: om.elevation,
+      nascer: iDia >= 0 ? om.daily.sunrise[iDia].slice(11, 16) : null,
+      por: iDia >= 0 ? om.daily.sunset[iDia].slice(11, 16) : null,
+    };
+  }
+
+  const hh = (h) => t("eixo.hora", { h });
+
+  function sugestaoDia(r, vazao) {
+    const partes = [];
+    if (r.raios) partes.push(t("sug.raios", { ini: hh(r.raios.ini), fim: hh(r.raios.fim) }));
+    const manha = r.todas.some((x) => x.h >= 9 && x.h <= 12 && ehChuvoso(x));
+    const tarde = r.todas.some((x) => x.h >= 13 && x.h <= 18 && ehChuvoso(x));
+    partes.push(t(manha && tarde ? "sug.chuvaDia" : manha ? "sug.tarde" : tarde ? "sug.cedo" : "sug.firme"));
+    if (vazao >= VAZAO_PASSARELA) partes.push(t("sug.vazaoAlta"));
+    if (r.sensMax >= 32) partes.push(t("sug.calor"));
+    if (r.uvMax >= 8) partes.push(t("sug.uv"));
+    return partes.join(" ");
+  }
+
+  function nivelUV(v) {
+    const k = v < 3 ? "baixo" : v < 6 ? "moderado" : v < 8 ? "alto" : v < 11 ? "muitoAlto" : "extremo";
+    return t("uv." + k);
+  }
+
+  const FASES = ["nova", "crescente", "quartoCrescente", "gibosaCrescente", "cheia", "gibosaMinguante", "quartoMinguante", "minguante"];
+  function faseLua(data) {
+    const sinodico = 29.530588853;
+    const idade = (((data.getTime() - Date.UTC(2000, 0, 6, 18, 14)) / 864e5) % sinodico + sinodico) % sinodico;
+    return FASES[Math.round((idade / sinodico) * 8) % 8];
+  }
+
+  function textoMontante(m) {
+    if (!m || m.chuva_24h_mm == null) return t("mont.sem");
+    return t(m.chuva_24h_mm >= 20 ? "mont.sobe" : "mont.normal", { v: num(m.chuva_24h_mm, 1) });
+  }
+
   // Inscricao nas novidades: a pessoa manda a mensagem pronta para o WhatsApp do Denis.
   const WHATSAPP_DENIS = "5545998411964";
   const linkInscricao = () => "https://wa.me/" + WHATSAPP_DENIS + "?text=" + encodeURIComponent(t("inscr.mensagem"));
@@ -301,6 +377,7 @@
     num, comSinal, nivel, manchete, fraseTendencia, atrasoMin, dadoAtrasado, alertaPassarela, eixoMax,
     dia, hora, formatarHora, horaLocal, textoAtraso, qualidade, piscinas, formatarVazao, ritmo24h, recorteSerie,
     estadoAtracao, projecao, lerCSV, lerRelatos, textoCompartilhar, linkWhatsApp, textoMarca, linkInscricao,
+    URL_CLIMA, resumoClima, sugestaoDia, nivelUV, faseLua, textoMontante,
     misturaAgua, aguaCritica, reguaMax, marcasRegua, linhasGrafico, PERIODOS, nomePeriodo, tituloPeriodo,
   };
 });

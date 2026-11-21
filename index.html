@@ -206,6 +206,40 @@
   .regua .ref span { color: var(--tinta-2); }
   .coluna-regua { min-width: 0; }
 
+  /* Painel do dia */
+  .painel-dia { display: flex; flex-direction: column; gap: 12px; }
+  .painel-dia p { margin: 0; }
+  .pd-cabeca { display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; flex-wrap: wrap; }
+  .pd-cabeca h2 { font-size: 1.75rem; text-transform: capitalize; }
+  .pd-rotulo { font-size: .875rem; color: var(--tinta-2); }
+  .pd-hora { font-size: .875rem; color: var(--tinta-2); }
+  .pd-sugestao { padding: 14px 16px; background: var(--alerta); color: var(--alerta-tinta); border-radius: 10px; }
+  .pd-sugestao .pd-rotulo { color: var(--alerta-tinta); opacity: .85; }
+  .pd-sugestao #pd-sugestao { margin-top: 4px; font-size: 1.0625rem; font-weight: 500; line-height: 1.4; }
+  .pd-metricas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  @media (min-width: 720px) { .pd-metricas { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .pd-metrica { padding: 12px 14px; background: color-mix(in srgb, var(--linha) 40%, transparent); border-radius: 10px; min-width: 0; }
+  .pd-valor { margin-top: 2px !important; font: 600 1.5rem/1.15 "Barlow Condensed", Barlow, sans-serif; }
+  .pd-valor.critico { color: var(--critico); }
+  .pd-sub { margin-top: 2px !important; font-size: .875rem; color: var(--tinta-2); }
+  .pd-cartao { padding: 12px 14px; border: 1px solid var(--linha); border-radius: 10px; min-width: 0; }
+  .pd-forte { margin-top: 4px !important; font-weight: 600; }
+  .pd-dupla { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  @media (min-width: 720px) { .pd-dupla { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .pd-horas { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; margin: 8px 0; text-align: center; font-size: .875rem; }
+  .pd-h { padding: 6px 1px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .pd-h svg { width: 24px; height: 24px; }
+  .pd-h.arco { background: color-mix(in srgb, var(--agua-baixa) 28%, transparent); }
+  .pd-h.raio { background: color-mix(in srgb, var(--alerta) 45%, transparent); }
+  .pd-barra { width: 80%; height: 5px; border-radius: 3px; background: var(--linha); overflow: hidden; }
+  .pd-barra i { display: block; height: 100%; background: #378add; }
+  .pd-detalhes summary { padding: 4px 0; }
+  .pd-detalhes dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; margin: 8px 0 0; }
+  @media (min-width: 720px) { .pd-detalhes dl { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .pd-detalhes dt { font-size: .875rem; color: var(--tinta-2); }
+  .pd-detalhes dd { margin: 0; font-weight: 600; }
+  #pd-enviar { align-self: flex-start; }
+
   /* Inscricao nas novidades: bloco escuro para se destacar entre as secoes. */
   .inscricao { padding: 28px 24px; background: var(--tinta); color: var(--nevoa); border-radius: 12px; }
   .inscricao h2 { font-size: clamp(1.9rem, 5vw, 2.6rem); line-height: 1.05; max-width: 18ch; }
@@ -515,6 +549,42 @@
       </a>
     </div>
   </div>
+
+  <section class="painel-dia" id="painel-dia" aria-labelledby="titulo-painel">
+    <div class="pd-cabeca">
+      <div>
+        <p class="pd-rotulo" id="titulo-painel" data-i18n="painel.titulo"></p>
+        <h2 id="pd-data"></h2>
+      </div>
+      <span class="pd-hora" id="pd-atualizado"></span>
+    </div>
+    <div class="pd-sugestao">
+      <p class="pd-rotulo" data-i18n="painel.sugestao"></p>
+      <p id="pd-sugestao"></p>
+    </div>
+    <div class="pd-metricas">
+      <div class="pd-metrica"><p class="pd-rotulo" data-i18n="painel.rio"></p><p class="pd-valor" id="pd-rio"></p><p class="pd-sub" id="pd-rio-sub"></p></div>
+      <div class="pd-metrica"><p class="pd-rotulo" data-i18n="painel.sensacao"></p><p class="pd-valor" id="pd-sens"></p><p class="pd-sub" id="pd-sens-sub"></p></div>
+      <div class="pd-metrica"><p class="pd-rotulo" data-i18n="painel.chuva"></p><p class="pd-valor" id="pd-chuva"></p><p class="pd-sub" id="pd-chuva-sub"></p></div>
+      <div class="pd-metrica"><p class="pd-rotulo" data-i18n="painel.uv"></p><p class="pd-valor" id="pd-uv"></p><p class="pd-sub" id="pd-uv-sub"></p></div>
+    </div>
+    <div class="pd-cartao">
+      <p class="pd-rotulo" data-i18n="painel.horas"></p>
+      <div class="pd-horas" id="pd-horas"></div>
+      <p class="pd-sub" data-i18n="painel.legenda"></p>
+    </div>
+    <div class="pd-dupla">
+      <div class="pd-cartao"><p class="pd-rotulo" data-i18n="painel.montante"></p><p id="pd-montante"></p></div>
+      <div class="pd-cartao"><p class="pd-rotulo" data-i18n="painel.arco"></p><p class="pd-forte" id="pd-arco"></p><p class="pd-sub" data-i18n="painel.arcoSub"></p></div>
+    </div>
+    <details class="pd-detalhes">
+      <summary data-i18n="painel.detalhes"></summary>
+      <dl id="pd-det"></dl>
+    </details>
+    <a class="atalho compartilhar" id="pd-enviar" href="https://wa.me/" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5a9.5 9.5 0 0 0-8.2 14.3L2.5 21.5l4.8-1.3A9.5 9.5 0 1 0 12 2.5z" fill="#25d366"/><path d="M8.6 7.4c.3-.3.7-.3.9 0l1.2 1.8c.2.3.1.7-.1.9l-.6.6c.6 1.3 1.6 2.3 2.9 2.9l.6-.6c.3-.2.6-.3.9-.1l1.8 1.2c.3.2.3.6 0 .9l-.8.8c-.6.6-1.5.7-2.3.4-2.4-1-4.3-2.9-5.3-5.3-.3-.8-.2-1.7.4-2.3z" fill="#fff"/></svg><span data-i18n="painel.enviar"></span></a>
+    <p class="pd-sub" data-i18n="painel.fonte"></p>
+    <p class="estado" id="pd-erro" hidden></p>
+  </section>
 
   <section aria-labelledby="titulo-grafico">
     <h2 id="titulo-grafico"></h2>
@@ -951,6 +1021,113 @@
     desenharBarras();
   }
 
+  // ---------- Painel do dia ----------
+  let clima = null;
+  let erroClima = false;
+  let climaEm = null;
+
+  async function carregarClima() {
+    try {
+      const r = await fetch(P.URL_CLIMA, { cache: "no-store" });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      clima = await r.json();
+      climaEm = new Date();
+      erroClima = false;
+    } catch (e) {
+      erroClima = !clima;
+    }
+    desenharPainel();
+  }
+
+  function iconeClima(x) {
+    const nuvem = '<path d="M7 18h10a4 4 0 0 0 .5-7.97A5.5 5.5 0 0 0 7 10.5 3.75 3.75 0 0 0 7 18z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>';
+    if (x.cod >= 95) return '<svg viewBox="0 0 24 24" aria-hidden="true">' + nuvem.replace("18h10", "15h10").replace("0 0 7 18z", "0 0 7 15z") + '<path d="M12 16l-2 4h3l-2 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    if (x.cod >= 51) return '<svg viewBox="0 0 24 24" aria-hidden="true">' + nuvem.replace("18h10", "15h10").replace("0 0 7 18z", "0 0 7 15z") + '<path d="M9 18l-1 3m4-3l-1 3m4-3l-1 3" stroke="#378add" stroke-width="1.7" stroke-linecap="round"/></svg>';
+    if (x.h < 6 || x.h >= 19) return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4a7.5 7.5 0 1 0 5 12.8A8 8 0 0 1 15 4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';
+    if (x.nuvens >= 60 || x.cod >= 2) return '<svg viewBox="0 0 24 24" aria-hidden="true">' + nuvem + '</svg>';
+    return '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="none" stroke="#e0a100" stroke-width="1.8"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.5 1.5M17.2 17.2l1.5 1.5M5.3 18.7l1.5-1.5M17.2 6.8l1.5-1.5" stroke="#e0a100" stroke-width="1.8" stroke-linecap="round"/></svg>';
+  }
+
+  function desenharPainel() {
+    if (!dados) return;
+    const v = dados.vazao_m3s;
+    const agora = new Date();
+    // A partir das 19h o guia ja planeja o dia seguinte: o painel passa a mostrar amanha.
+    const noite = P.horaLocal(agora.toISOString()) >= 19;
+    const alvo = noite ? new Date(agora.getTime() + 864e5) : agora;
+    const hoje = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(alvo);
+    $("pd-data").textContent = t(noite ? "painel.amanha" : "painel.hoje", {
+      dia: new Intl.DateTimeFormat(LOCALE[P.idioma()], { timeZone: "America/Sao_Paulo", weekday: "long", day: "2-digit", month: "2-digit" }).format(alvo),
+    });
+    $("pd-rio").textContent = P.formatarVazao(v, unidade);
+    $("pd-rio").classList.toggle("critico", v >= P.VAZAO_PASSARELA);
+    $("pd-rio-sub").textContent = P.fraseTendencia(dados);
+    $("pd-montante").textContent = P.textoMontante(dados.montante);
+
+    $("pd-erro").hidden = !erroClima;
+    $("pd-erro").textContent = erroClima ? t("painel.erro") : "";
+    if (!clima) return;
+    const r = P.resumoClima(clima, hoje, noite ? 8 : P.horaLocal(agora.toISOString()));
+    if (!r.todas.length) return;
+    $("pd-atualizado").textContent = t("painel.atualizado", { hora: P.hora((climaEm || agora).toISOString()) });
+    const sugestao = P.sugestaoDia(r, v);
+    $("pd-sugestao").textContent = sugestao;
+
+    $("pd-sens").textContent = Math.round(r.sensMax) + " °C";
+    $("pd-sens-sub").textContent = t("painel.termometro", { v: Math.round(r.tempMax) + " °C" });
+    const jan = r.raios || r.chuva;
+    $("pd-chuva").textContent = jan
+      ? t("painel.chuvaJanela", { ini: t("eixo.hora", { h: jan.ini }), fim: t("eixo.hora", { h: jan.fim }) })
+      : t("painel.semChuva");
+    $("pd-chuva-sub").textContent = t(r.raios ? "painel.comRaios" : r.chuva ? "painel.chanceAlta" : "painel.semChuvaSub");
+    $("pd-uv").textContent = P.nivelUV(r.uvMax);
+    $("pd-uv-sub").textContent = t("painel.uvSub", { v: P.num(r.uvMax) });
+
+    const horasEl = $("pd-horas");
+    horasEl.textContent = "";
+    r.horas.forEach((x) => {
+      const c = h("div", "pd-h" + (x.raio ? " raio" : x.arco ? " arco" : ""));
+      c.append(h("span", null, t("eixo.hora", { h: x.h })));
+      const ic = h("span");
+      ic.innerHTML = iconeClima(x);
+      c.append(ic, h("span", null, Math.round(x.temp) + "°"));
+      const barra = h("span", "pd-barra");
+      const fill = h("i");
+      fill.style.width = Math.max(0, Math.min(100, x.chuva || 0)) + "%";
+      barra.append(fill);
+      barra.title = (x.chuva || 0) + "%";
+      c.append(barra);
+      horasEl.append(c);
+    });
+
+    $("pd-arco").textContent = r.arcoIris
+      ? t("painel.chuvaJanela", { ini: t("eixo.hora", { h: r.arcoIris.ini }), fim: t("eixo.hora", { h: r.arcoIris.fim }) })
+      : t("painel.arcoNao");
+
+    const det = $("pd-det");
+    det.textContent = "";
+    [
+      ["det.umidade", r.atual ? Math.round(r.atual.umidade) + "%" : "-"],
+      ["det.vento", r.atual ? Math.round(r.atual.vento) + " km/h" : "-"],
+      ["det.pressao", r.atual ? P.num(r.atual.pressao) + " hPa" : "-"],
+      ["det.nascer", r.nascer || "-"],
+      ["det.por", r.por || "-"],
+      ["det.lua", t("lua." + P.faseLua(agora))],
+      ["det.altitude", r.altitude != null ? P.num(r.altitude) + " m" : "-"],
+    ].forEach(([k, val]) => {
+      const d = h("div");
+      d.append(h("dt", null, t(k)), h("dd", null, val));
+      det.append(d);
+    });
+
+    $("pd-enviar").href = P.linkWhatsApp(t("painel.resumo", {
+      dia: $("pd-data").textContent,
+      rio: P.formatarVazao(v, "m3"),
+      sug: sugestao,
+      url: location.origin + location.pathname,
+    }));
+  }
+
   function desenharRelatos() {
     const secao = $("ocorrencias");
     secao.hidden = !(CONFIG.FORMULARIO_URL || CONFIG.RELATOS_CSV_URL);
@@ -1033,6 +1210,7 @@
     atualizarAtraso();
     desenharSimulacao();
     desenharRelatos();
+    desenharPainel();
   }
 
   let erroCarga = false;
@@ -1101,6 +1279,7 @@
   });
   $("compartilhar").addEventListener("click", () => evento("compartilhar-whatsapp"));
   $("botao-inscricao").addEventListener("click", () => evento("inscricao-novidades"));
+  $("pd-enviar").addEventListener("click", () => evento("painel-enviar"));
   $("atalho").addEventListener("click", async () => {
     evento("atalho-clique");
     if (pedidoInstalacao) {
@@ -1141,6 +1320,8 @@
   aplicarTextos();
   carregar();
   carregarRelatos();
+  carregarClima();
+  setInterval(carregarClima, 30 * 60 * 1000);
   setInterval(() => { carregar(); carregarRelatos(); }, INTERVALO_MS);
   setInterval(atualizarAtraso, 60 * 1000);
 })();
