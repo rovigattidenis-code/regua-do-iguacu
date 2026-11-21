@@ -265,17 +265,9 @@
     return t(r.raios ? "prev.raios" : "prev.chuva", { ini: hh(j.ini), fim: hh(j.fim) });
   }
 
-  // Mensagem em bullets para o guia mandar aos turistas pelo WhatsApp.
+  // Texto que acompanha o card: os dados ja estao na imagem, aqui vai so o convite para o site.
   function mensagemTuristas(d, r, diaTexto, url) {
-    const graus = (v) => Math.round(v) + " °C";
-    return [
-      t("tur.titulo", { dia: diaTexto }),
-      t("tur.rio", { v: formatarVazao(d.vazao_m3s, "m3"), hora: hora(d.medicao) }),
-      t("tur.temp", { t: graus(r.tempMax), s: graus(r.sensMax) }),
-      t("tur.prev", { p: previsaoCurta(r) }),
-      t("tur.leve"),
-      t("tur.veja", { url }),
-    ];
+    return [t("tur.site", { url })];
   }
 
   // Inscricao nas novidades: a pessoa manda a mensagem pronta para o WhatsApp do Denis.

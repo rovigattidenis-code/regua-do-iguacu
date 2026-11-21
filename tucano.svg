@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">
+  <!-- Ilustracao propria da Regua do Iguacu: tucano de bico amarelo num galho, com folhas da mata. -->
+  <g fill="#1f5a3a">
+    <path d="M330 40c50 10 70 60 60 110-40-10-70-50-60-110z"/>
+    <path d="M360 160c30 20 40 60 25 95-30-20-40-55-25-95z"/>
+    <path d="M40 300c-30 30-35 75-15 110 25-25 35-70 15-110z"/>
+    <path d="M300 10c-30 15-45 50-40 85 30-15 45-50 40-85z"/>
+  </g>
+  <g fill="#2e7d4f">
+    <path d="M370 90c20 30 15 75-10 100-15-35-10-75 10-100z"/>
+    <path d="M10 360c40 0 70 30 75 70-40 0-70-30-75-70z"/>
+  </g>
+  <path d="M-10 452c90-30 230-40 420-62" fill="none" stroke="#5b3a21" stroke-width="22" stroke-linecap="round"/>
+  <path d="M120 432c-10-25 0-50 25-60" fill="none" stroke="#5b3a21" stroke-width="10" stroke-linecap="round"/>
+  <path d="M262 330l42 150 30-8-40-146z" fill="#111"/>
+  <path d="M206 150c80-14 130 60 112 170-10 60-55 100-100 90-45-10-62-70-55-150 4-50 13-100 43-110z" fill="#141414"/>
+  <path d="M276 360c18 4 30 16 34 30-18 2-32-8-38-22z" fill="#d7261e"/>
+  <path d="M207 170c-26 14-34 60-22 100 12 30 40 34 55 12 14-22 12-70-4-95-8-14-18-20-29-17z" fill="#fff6cc"/>
+  <path d="M207 170c-26 14-34 60-22 100" fill="none" stroke="#ffd52e" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="222" cy="150" r="48" fill="#141414"/>
+  <path d="M190 118c-60-22-140-16-182 38 0 14 6 22 14 26 50-24 110-30 172-22z" fill="#ffcf1f"/>
+  <path d="M194 160c-62-8-122-2-172 22 50 18 112 22 170 14z" fill="#f59e0b"/>
+  <path d="M8 156c8-12 20-20 36-24l6 42c-12 2-22 6-28 8-8-4-14-12-14-26z" fill="#141414"/>
+  <path d="M190 118c6 14 8 30 4 42" fill="none" stroke="#141414" stroke-width="6" stroke-linecap="round"/>
+  <path d="M60 140c40-12 90-14 120-8" fill="none" stroke="#ffe680" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+  <circle cx="214" cy="142" r="17" fill="#f08a24"/>
+  <circle cx="214" cy="142" r="10" fill="#2f7fe0"/>
+  <circle cx="214" cy="142" r="5.5" fill="#0b0b0b"/>
+  <circle cx="211" cy="139" r="2" fill="#fff"/>
+  <path d="M226 410l-6 32m22-34l-2 34" stroke="#6d6d6d" stroke-width="7" stroke-linecap="round"/>
+</svg>
