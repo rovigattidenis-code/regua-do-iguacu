@@ -233,12 +233,16 @@
   .pd-h.raio { background: color-mix(in srgb, var(--alerta) 45%, transparent); }
   .pd-barra { width: 80%; height: 5px; border-radius: 3px; background: var(--linha); overflow: hidden; }
   .pd-barra i { display: block; height: 100%; background: #378add; }
-  .pd-detalhes summary { padding: 4px 0; }
-  .pd-detalhes dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; margin: 8px 0 0; }
-  @media (min-width: 720px) { .pd-detalhes dl { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-  .pd-detalhes dt { font-size: .875rem; color: var(--tinta-2); }
-  .pd-detalhes dd { margin: 0; font-weight: 600; }
-  #pd-enviar { align-self: flex-start; }
+  .pd-detalhes .pd-valor { font-size: 1.25rem; }
+  .pd-acoes { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pd-card { display: inline-flex; align-items: center; gap: 6px; }
+  .pd-leve { padding: 12px 16px; border: 2px solid var(--alerta); border-radius: 10px; }
+  .pd-leve ul { margin: 6px 0 0; padding-left: 1.2em; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 16px; font-weight: 600; }
+  @media (min-width: 720px) { .pd-leve ul { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .pd-leve li::marker { color: var(--alerta); }
+  .pd-lista { margin: 8px 0 0; padding-left: 1.2em; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 16px; }
+  @media (min-width: 720px) { .pd-lista { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .pd-lista b { font-weight: 600; }
 
   /* Inscricao nas novidades: bloco escuro para se destacar entre as secoes. */
   .inscricao { padding: 28px 24px; background: var(--tinta); color: var(--nevoa); border-radius: 12px; }
@@ -562,26 +566,32 @@
       <p class="pd-rotulo" data-i18n="painel.sugestao"></p>
       <p id="pd-sugestao"></p>
     </div>
+    <div class="pd-leve">
+      <p class="pd-rotulo" data-i18n="leve.titulo"></p>
+      <ul>
+        <li data-i18n="leve.agua"></li>
+        <li data-i18n="leve.protetor"></li>
+        <li data-i18n="leve.repelente"></li>
+        <li data-i18n="leve.bone"></li>
+      </ul>
+    </div>
     <div class="pd-metricas">
       <div class="pd-metrica"><p class="pd-rotulo" data-i18n="painel.rio"></p><p class="pd-valor" id="pd-rio"></p><p class="pd-sub" id="pd-rio-sub"></p></div>
       <div class="pd-metrica"><p class="pd-rotulo" data-i18n="painel.sensacao"></p><p class="pd-valor" id="pd-sens"></p><p class="pd-sub" id="pd-sens-sub"></p></div>
       <div class="pd-metrica"><p class="pd-rotulo" data-i18n="painel.chuva"></p><p class="pd-valor" id="pd-chuva"></p><p class="pd-sub" id="pd-chuva-sub"></p></div>
       <div class="pd-metrica"><p class="pd-rotulo" data-i18n="painel.uv"></p><p class="pd-valor" id="pd-uv"></p><p class="pd-sub" id="pd-uv-sub"></p></div>
     </div>
+    <div class="pd-metricas pd-detalhes" id="pd-det"></div>
     <div class="pd-cartao">
       <p class="pd-rotulo" data-i18n="painel.horas"></p>
       <div class="pd-horas" id="pd-horas"></div>
       <p class="pd-sub" data-i18n="painel.legenda"></p>
     </div>
-    <div class="pd-dupla">
-      <div class="pd-cartao"><p class="pd-rotulo" data-i18n="painel.montante"></p><p id="pd-montante"></p></div>
-      <div class="pd-cartao"><p class="pd-rotulo" data-i18n="painel.arco"></p><p class="pd-forte" id="pd-arco"></p><p class="pd-sub" data-i18n="painel.arcoSub"></p></div>
+    <div class="pd-cartao"><p class="pd-rotulo" data-i18n="painel.arco"></p><p class="pd-forte" id="pd-arco"></p><p class="pd-sub" data-i18n="painel.arcoSub"></p></div>
+    <div class="pd-acoes">
+    <button type="button" class="atalho pd-card" id="pd-card"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="9" cy="10" r="2" fill="currentColor"/><path d="M4 18l5-5 4 4 3-3 4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span data-i18n="card.botao"></span></button>
     </div>
-    <details class="pd-detalhes">
-      <summary data-i18n="painel.detalhes"></summary>
-      <dl id="pd-det"></dl>
-    </details>
-    <a class="atalho compartilhar" id="pd-enviar" href="https://wa.me/" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5a9.5 9.5 0 0 0-8.2 14.3L2.5 21.5l4.8-1.3A9.5 9.5 0 1 0 12 2.5z" fill="#25d366"/><path d="M8.6 7.4c.3-.3.7-.3.9 0l1.2 1.8c.2.3.1.7-.1.9l-.6.6c.6 1.3 1.6 2.3 2.9 2.9l.6-.6c.3-.2.6-.3.9-.1l1.8 1.2c.3.2.3.6 0 .9l-.8.8c-.6.6-1.5.7-2.3.4-2.4-1-4.3-2.9-5.3-5.3-.3-.8-.2-1.7.4-2.3z" fill="#fff"/></svg><span data-i18n="painel.enviar"></span></a>
+    <p class="pd-sub" id="pd-card-msg" role="status" hidden></p>
     <p class="pd-sub" data-i18n="painel.fonte"></p>
     <p class="estado" id="pd-erro" hidden></p>
   </section>
@@ -1052,22 +1062,17 @@
     if (!dados) return;
     const v = dados.vazao_m3s;
     const agora = new Date();
-    // A partir das 19h o guia ja planeja o dia seguinte: o painel passa a mostrar amanha.
-    const noite = P.horaLocal(agora.toISOString()) >= 19;
-    const alvo = noite ? new Date(agora.getTime() + 864e5) : agora;
-    const hoje = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(alvo);
-    $("pd-data").textContent = t(noite ? "painel.amanha" : "painel.hoje", {
-      dia: new Intl.DateTimeFormat(LOCALE[P.idioma()], { timeZone: "America/Sao_Paulo", weekday: "long", day: "2-digit", month: "2-digit" }).format(alvo),
-    });
+    const hoje = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Sao_Paulo" }).format(agora);
+    const diaTexto = new Intl.DateTimeFormat(LOCALE[P.idioma()], { timeZone: "America/Sao_Paulo", weekday: "long", day: "2-digit", month: "2-digit" }).format(agora);
+    $("pd-data").textContent = t("painel.hoje", { dia: diaTexto });
     $("pd-rio").textContent = P.formatarVazao(v, unidade);
     $("pd-rio").classList.toggle("critico", v >= P.VAZAO_PASSARELA);
     $("pd-rio-sub").textContent = P.fraseTendencia(dados);
-    $("pd-montante").textContent = P.textoMontante(dados.montante);
 
     $("pd-erro").hidden = !erroClima;
     $("pd-erro").textContent = erroClima ? t("painel.erro") : "";
     if (!clima) return;
-    const r = P.resumoClima(clima, hoje, noite ? 8 : P.horaLocal(agora.toISOString()));
+    const r = P.resumoClima(clima, hoje, P.horaLocal(agora.toISOString()));
     if (!r.todas.length) return;
     $("pd-atualizado").textContent = t("painel.atualizado", { hora: P.hora((climaEm || agora).toISOString()) });
     const sugestao = P.sugestaoDia(r, v);
@@ -1115,17 +1120,113 @@
       ["det.lua", t("lua." + P.faseLua(agora))],
       ["det.altitude", r.altitude != null ? P.num(r.altitude) + " m" : "-"],
     ].forEach(([k, val]) => {
-      const d = h("div");
-      d.append(h("dt", null, t(k)), h("dd", null, val));
-      det.append(d);
+      const cartao = h("div", "pd-metrica");
+      cartao.append(h("p", "pd-rotulo", t(k)), h("p", "pd-valor", val));
+      det.append(cartao);
     });
 
-    $("pd-enviar").href = P.linkWhatsApp(t("painel.resumo", {
-      dia: $("pd-data").textContent,
-      rio: P.formatarVazao(v, "m3"),
-      sug: sugestao,
-      url: location.origin + location.pathname,
-    }));
+    ultimoResumo = { r, diaTexto };
+  }
+
+  // ---------- Card em imagem para os turistas ----------
+  let ultimoResumo = null;
+
+  function quebrarTexto(ctx, texto, largura) {
+    const palavras = texto.split(" ");
+    const linhas = [];
+    let linha = "";
+    palavras.forEach((p) => {
+      const teste = linha ? linha + " " + p : p;
+      if (ctx.measureText(teste).width > largura && linha) { linhas.push(linha); linha = p; } else linha = teste;
+    });
+    if (linha) linhas.push(linha);
+    return linhas;
+  }
+
+  async function gerarCard() {
+    if (!dados || !ultimoResumo) return;
+    const { r, diaTexto } = ultimoResumo;
+    const v = dados.vazao_m3s;
+    await Promise.all(["600 90px 'Barlow Condensed'", "500 40px Barlow", "600 40px Barlow"].map((f) => document.fonts.load(f).catch(() => {})));
+    // Desenha numa tela alta e depois corta na altura do conteudo, para nada ficar sobreposto.
+    const L = 1080, A = 1800, M = 80;
+    const cv = document.createElement("canvas");
+    cv.width = L; cv.height = A;
+    const c = cv.getContext("2d");
+    c.fillStyle = "#0f2621"; c.fillRect(0, 0, L, A);
+
+    let y = 120;
+    c.fillStyle = "#a9bdb6"; c.font = "500 40px Barlow, sans-serif";
+    c.fillText(diaTexto.charAt(0).toUpperCase() + diaTexto.slice(1), M, y);
+    y += 100;
+    c.fillStyle = "#e6edea"; c.font = "600 92px 'Barlow Condensed', sans-serif";
+    quebrarTexto(c, t("card.titulo"), L - 2 * M).forEach((ln) => { c.fillText(ln, M, y); y += 96; });
+
+    y += 50;
+    c.fillStyle = "#a9bdb6"; c.font = "500 40px Barlow, sans-serif";
+    c.fillText(t("card.rio"), M, y);
+    y += 140;
+    c.fillStyle = v >= P.VAZAO_PASSARELA ? "#e8857a" : "#c47c4e"; c.font = "600 150px 'Barlow Condensed', sans-serif";
+    c.fillText(P.formatarVazao(v, "m3"), M, y);
+    y += 60;
+    c.fillStyle = "#a9bdb6"; c.font = "500 40px Barlow, sans-serif";
+    c.fillText(t("card.leitura", { hora: P.hora(dados.medicao) }), M, y);
+
+    y += 90;
+    c.fillStyle = "#e6edea"; c.font = "500 46px Barlow, sans-serif";
+    [
+      t("card.temp", { v: Math.round(r.tempMax) + " °C" }),
+      t("card.sens", { v: Math.round(r.sensMax) + " °C" }),
+      t("card.prev", { v: P.previsaoCurta(r) }),
+    ].forEach((item) => {
+      quebrarTexto(c, "• " + item, L - 2 * M).forEach((ln, i) => { c.fillText(i ? "   " + ln : ln, M, y); y += 62; });
+    });
+
+    y += 30;
+    const itens = ["leve.agua", "leve.protetor", "leve.repelente", "leve.bone"].map((k) => "• " + t(k));
+    const altCaixa = 100 + itens.length * 54;
+    c.fillStyle = "#f1c232"; c.beginPath(); c.roundRect(M, y, L - 2 * M, altCaixa, 24); c.fill();
+    c.fillStyle = "#2b2100"; c.font = "600 44px Barlow, sans-serif";
+    c.fillText(t("leve.titulo"), M + 36, y + 70);
+    c.font = "500 42px Barlow, sans-serif";
+    itens.forEach((item, i) => c.fillText(item, M + 36, y + 130 + i * 54));
+    y += altCaixa + 70;
+
+    const qr = new Image();
+    qr.src = "qrcode.svg";
+    await qr.decode().catch(() => {});
+    const qy = y;
+    c.fillStyle = "#ffffff"; c.fillRect(M, qy, 170, 170);
+    if (qr.complete && qr.naturalWidth) c.drawImage(qr, M + 6, qy + 6, 158, 158);
+    c.fillStyle = "#e6edea"; c.font = "600 40px Barlow, sans-serif";
+    c.fillText("Régua do Iguaçu", M + 200, qy + 60);
+    c.fillStyle = "#a9bdb6"; c.font = "500 30px Barlow, sans-serif";
+    c.fillText("rovigattidenis-code.github.io/regua-do-iguacu", M + 200, qy + 110);
+    c.fillText(t("card.rodape"), M + 200, qy + 155);
+
+    const final = document.createElement("canvas");
+    final.width = L; final.height = qy + 170 + M;
+    final.getContext("2d").drawImage(cv, 0, 0);
+    const blob = await new Promise((res) => final.toBlob(res, "image/png"));
+    if (!blob) throw new Error("sem imagem");
+    const arquivo = new File([blob], "regua-do-iguacu.png", { type: "image/png" });
+    const texto = P.mensagemTuristas(dados, r, diaTexto, location.origin + location.pathname).join("\n");
+    if (navigator.canShare && navigator.canShare({ files: [arquivo] })) {
+      try { await navigator.share({ files: [arquivo], text: texto }); return; } catch (e) { if (e.name === "AbortError") return; }
+    }
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "regua-do-iguacu.png";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    const aviso = $("pd-card-msg");
+    aviso.hidden = false;
+    aviso.textContent = t("card.pronto") + " ";
+    const link = h("a", null, t("card.abrirWhats"));
+    link.href = P.linkWhatsApp(texto);
+    link.target = "_blank";
+    link.rel = "noopener";
+    aviso.append(link);
   }
 
   function desenharRelatos() {
@@ -1279,7 +1380,10 @@
   });
   $("compartilhar").addEventListener("click", () => evento("compartilhar-whatsapp"));
   $("botao-inscricao").addEventListener("click", () => evento("inscricao-novidades"));
-  $("pd-enviar").addEventListener("click", () => evento("painel-enviar"));
+  $("pd-card").addEventListener("click", async () => {
+    evento("card-turistas");
+    try { await gerarCard(); } catch (e) { $("pd-card-msg").hidden = false; $("pd-card-msg").textContent = t("card.erro"); }
+  });
   $("atalho").addEventListener("click", async () => {
     evento("atalho-clique");
     if (pedidoInstalacao) {

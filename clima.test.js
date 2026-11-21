@@ -86,3 +86,24 @@ test("chuva rio acima", () => {
   assert.match(p.textoMontante({ chuva_24h_mm: 2 }), /Sem chuva forte/);
   assert.match(p.textoMontante(null), /Sem dado/);
 });
+
+test("previsao curta para turistas", () => {
+  const raios = p.resumoClima(previsao(tardeComRaios), "2026-11-20", 8);
+  assert.strictEqual(p.previsaoCurta(raios), "chuva com raios das 15h às 18h");
+  const firme = p.resumoClima(previsao(), "2026-11-20", 8);
+  assert.strictEqual(p.previsaoCurta(firme), "sem chuva forte");
+});
+
+test("mensagem para turistas em bullets", () => {
+  const r = p.resumoClima(previsao(tardeComRaios), "2026-11-20", 8);
+  const d = { vazao_m3s: 4795, medicao: "2026-11-20T19:00:00-03:00" };
+  const linhas = p.mensagemTuristas(d, r, "sábado, 21/11", "https://exemplo.com/regua/");
+  assert.deepStrictEqual(linhas, [
+    "*Cataratas do Iguaçu hoje, sábado, 21/11*",
+    "• Rio: 4.795 m³/s (leitura das 19:00)",
+    "• Temperatura: 25 °C, sensação de 27 °C",
+    "• Previsão: chuva com raios das 15h às 18h",
+    "• Leve: água, protetor solar, repelente de mosquito e boné",
+    "Veja ao vivo: https://exemplo.com/regua/",
+  ]);
+});

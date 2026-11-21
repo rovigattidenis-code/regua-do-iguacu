@@ -41,7 +41,7 @@ Para saber de qual grupo vieram as visitas, compartilhe o link com `?ref=` no fi
 
 ## Painel do dia
 
-Abaixo da régua, o painel junta a previsão do tempo de Foz (Open-Meteo), a chuva das últimas 24 h em Porto Capanema (ANA, estação 65987000) e a vazão. A partir das 19h ele mostra o dia seguinte. A sugestão do dia e o arco-íris são regras simples, em `painel.js` (`sugestaoDia` e `resumoClima`). O Open-Meteo gratuito é para uso não comercial: antes de cobrar por um plano Pro, troque a fonte ou contrate o plano comercial.
+Abaixo da régua, o painel do dia junta a previsão do tempo de Foz (Open-Meteo) e a vazão, com a lista do que levar e um botão que gera o card para turistas (imagem + resumo em marcadores). O script também guarda a chuva das últimas 24 h em Porto Capanema (ANA, estação 65987000), que não aparece na página. A sugestão do dia e o arco-íris são regras simples, em `painel.js` (`sugestaoDia` e `resumoClima`). O Open-Meteo gratuito é para uso não comercial: antes de cobrar por um plano Pro, troque a fonte ou contrate o plano comercial.
 
 ## QR code e prints
 
