@@ -4,28 +4,24 @@
  "fonte": "ANA / Copel",
  "vazao_m3s": 4344.8,
  "cota": 252.9,
- "medicao": "2026-11-21T05:00:00-03:00",
- "atualizado_ana": "2026-11-21 05:15:13.75",
+ "medicao": "2026-11-21T06:00:00-03:00",
+ "atualizado_ana": "2026-11-21 06:15:12.453",
  "qualidade": "ok",
- "variacao_24h_m3s": 1045.1,
- "taxa_m3s_por_hora": 1.1,
+ "variacao_24h_m3s": 1093.0,
+ "taxa_m3s_por_hora": -2.1,
  "janela_taxa_horas": 6.0,
  "tendencia": "subindo",
  "range_usado": "DIAS_30",
- "gerado_em": "2026-11-21T06:10:21-03:00",
- "atraso_min": 70,
+ "gerado_em": "2026-11-21T07:19:37-03:00",
+ "atraso_min": 79,
  "montante": {
   "estacao": "65987000",
   "nome": "Porto Capanema",
   "chuva_24h_mm": 10.0,
-  "vazao_m3s": 4786.39,
-  "medicao": "2026-11-21T05:00:00-03:00"
+  "vazao_m3s": 4719.42,
+  "medicao": "2026-11-21T06:00:00-03:00"
  },
  "serie": [
-  {
-   "t": "2026-10-22T05:00:00-03:00",
-   "v": 3493.0
-  },
   {
    "t": "2026-10-22T06:00:00-03:00",
    "v": 3440.8
@@ -2904,6 +2900,10 @@
   },
   {
    "t": "2026-11-21T05:00:00-03:00",
+   "v": 4344.8
+  },
+  {
+   "t": "2026-11-21T06:00:00-03:00",
    "v": 4344.8
   }
  ]
