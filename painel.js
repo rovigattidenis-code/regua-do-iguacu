@@ -185,7 +185,7 @@
   // ---------- Painel do dia: clima de Foz e sugestao ----------
   const URL_CLIMA = "https://api.open-meteo.com/v1/forecast?latitude=-25.6953&longitude=-54.4367" +
     "&hourly=temperature_2m,apparent_temperature,precipitation_probability,weather_code,uv_index,cloud_cover,relative_humidity_2m,wind_speed_10m,surface_pressure" +
-    "&daily=sunrise,sunset&timezone=America%2FSao_Paulo&forecast_days=2";
+    "&daily=sunrise,sunset,precipitation_sum&timezone=America%2FSao_Paulo&forecast_days=2";
   const ehRaio = (x) => x.cod >= 95;
   const ehChuvoso = (x) => x.chuva >= 50 || x.cod >= 61;
 
@@ -212,8 +212,14 @@
     const atual = todas.reduce((m, x) => (!m || Math.abs(x.h - horaAtual) < Math.abs(m.h - horaAtual) ? x : m), null);
     return {
       todas,
-      horas: [6, 8, 10, 12, 14, 16, 18, 20].map((h) => todas.find((x) => x.h === h)).filter(Boolean)
-        .map((x) => ({ ...x, raio: ehRaio(x), arco: !!arcoIris && x.h >= arcoIris.ini && x.h < arcoIris.fim })),
+      // Hora a hora das 6h as 18h; a coluna da hora atual fica marcada como "agora".
+      horas: [6, 8, 10, 12, 14, 16, 18].map((h) => todas.find((x) => x.h === h)).filter(Boolean)
+        .map((x) => ({
+          ...x,
+          raio: ehRaio(x),
+          arco: !!arcoIris && x.h >= arcoIris.ini && x.h < arcoIris.fim,
+          agora: horaAtual >= x.h && horaAtual < x.h + 2,
+        })),
       raios: janela(entre(6, 21), ehRaio),
       chuva: janela(entre(6, 21), (x) => x.chuva >= 60 || x.cod >= 61),
       arcoIris,
@@ -224,6 +230,7 @@
       altitude: om.elevation,
       nascer: iDia >= 0 ? om.daily.sunrise[iDia].slice(11, 16) : null,
       por: iDia >= 0 ? om.daily.sunset[iDia].slice(11, 16) : null,
+      chuvaDia: iDia >= 0 && om.daily.precipitation_sum ? om.daily.precipitation_sum[iDia] : null,
     };
   }
 

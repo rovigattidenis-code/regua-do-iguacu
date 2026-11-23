@@ -21,7 +21,7 @@ function previsao(ajuste) {
     hourly.wind_speed_10m.push(x.vento);
     hourly.surface_pressure.push(x.pressao);
   }
-  return { elevation: 162, hourly, daily: { time: ["2026-11-20"], sunrise: ["2026-11-20T05:25"], sunset: ["2026-11-20T18:52"] } };
+  return { elevation: 162, hourly, daily: { time: ["2026-11-20"], sunrise: ["2026-11-20T05:25"], sunset: ["2026-11-20T18:52"], precipitation_sum: [12.4] } };
 }
 
 const tardeComRaios = (h) => (h >= 15 && h <= 17 ? { chuva: 80, cod: 95 } : {});
@@ -29,7 +29,8 @@ const tardeComRaios = (h) => (h >= 15 && h <= 17 ? { chuva: 80, cod: 95 } : {});
 test("resumo pega o dia, a hora atual e os picos", () => {
   const r = p.resumoClima(previsao((h) => (h === 13 ? { sens: 36 } : {})), "2026-11-20", 10);
   assert.strictEqual(r.horas[0].h, 6);
-  assert.strictEqual(r.horas.at(-1).h, 20);
+  assert.strictEqual(r.horas.at(-1).h, 18);
+  assert.strictEqual(r.chuvaDia, 12.4);
   assert.strictEqual(r.sensMax, 36);
   assert.strictEqual(r.uvMax, 9);
   assert.strictEqual(r.atual.umidade, 70);
@@ -53,21 +54,23 @@ test("arco-iris provavel nas manhas de sol, no horario do parque", () => {
 test("sugestao para tarde com raios", () => {
   const r = p.resumoClima(previsao(tardeComRaios), "2026-11-20", 8);
   const s = p.sugestaoDia(r, 5000);
-  assert.match(s, /^Raios previstos entre 15h e 18h/);
-  assert.match(s, /Cataratas cedo/);
+  assert.match(s, /^Alerta de raios entre 15h e 18h/);
+  assert.match(s, /Alerta de chuva à tarde/);
   assert.match(s, /protetor solar/);
+  // So alertas: nada de proibir ou mandar evitar atrativos.
+  assert.doesNotMatch(s, /evite|proibid|não vá|passeio de barco/i);
 });
 
 test("sugestao para dia firme com vazao alta", () => {
   const r = p.resumoClima(previsao(), "2026-11-20", 8);
   const s = p.sugestaoDia(r, 8300);
-  assert.match(s, /Dia firme/);
-  assert.match(s, /confirme com o parque/);
+  assert.match(s, /Tempo firme/);
+  assert.match(s, /Alerta de vazão alta/);
 });
 
 test("sugestao para manha chuvosa", () => {
   const r = p.resumoClima(previsao((h) => (h >= 8 && h <= 11 ? { chuva: 70, cod: 63 } : {})), "2026-11-20", 8);
-  assert.match(p.sugestaoDia(r, 5000), /Manhã com chuva/);
+  assert.match(p.sugestaoDia(r, 5000), /Alerta de chuva pela manhã/);
 });
 
 test("nivel do indice UV", () => {
@@ -102,4 +105,11 @@ test("resumo para turistas traz so o convite para o site", () => {
   ]);
   p.definirIdioma("en");
   assert.deepStrictEqual(p.mensagemTuristas(d, r, "Saturday", "https://x/"), ["Visit the website for more information: https://x/"]);
+});
+
+test("hora atual destacada no hora a hora", () => {
+  const r = p.resumoClima(previsao(), "2026-11-20", 9);
+  assert.deepStrictEqual(r.horas.filter((x) => x.agora).map((x) => x.h), [8]);
+  const noite = p.resumoClima(previsao(), "2026-11-20", 21);
+  assert.strictEqual(noite.horas.some((x) => x.agora), false);
 });
