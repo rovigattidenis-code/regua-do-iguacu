@@ -12,14 +12,14 @@
  "janela_taxa_horas": 6.0,
  "tendencia": "subindo",
  "range_usado": "DIAS_30",
- "gerado_em": "2026-11-24T14:26:52-03:00",
- "atraso_min": 26,
+ "gerado_em": "2026-11-24T15:16:53-03:00",
+ "atraso_min": 76,
  "montante": {
   "estacao": "65987000",
   "nome": "Porto Capanema",
   "chuva_24h_mm": 2.2,
-  "vazao_m3s": 3460.09,
-  "medicao": "2026-11-24T13:00:00-03:00"
+  "vazao_m3s": 3264.41,
+  "medicao": "2026-11-24T14:00:00-03:00"
  },
  "serie": [
   {
