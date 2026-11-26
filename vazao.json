@@ -2,30 +2,26 @@
  "estacao": "65992502",
  "nome": "Hotel Cataratas",
  "fonte": "ANA / Copel",
- "vazao_m3s": 9946.5,
- "cota": 396.9,
- "medicao": "2026-11-26T16:00:00-03:00",
- "atualizado_ana": "2026-11-26 16:15:14.38",
+ "vazao_m3s": 9919.5,
+ "cota": 396.3,
+ "medicao": "2026-11-26T17:00:00-03:00",
+ "atualizado_ana": "2026-11-26 17:15:13.973",
  "qualidade": "ok",
- "variacao_24h_m3s": 2239.4,
- "taxa_m3s_por_hora": 40.8,
+ "variacao_24h_m3s": 1953.1,
+ "taxa_m3s_por_hora": 25.7,
  "janela_taxa_horas": 6.0,
  "tendencia": "subindo",
  "range_usado": "DIAS_30",
- "gerado_em": "2026-11-26T16:29:47-03:00",
- "atraso_min": 29,
+ "gerado_em": "2026-11-26T18:18:40-03:00",
+ "atraso_min": 78,
  "montante": {
   "estacao": "65987000",
   "nome": "Porto Capanema",
   "chuva_24h_mm": 0.0,
-  "vazao_m3s": 7798.46,
-  "medicao": "2026-11-26T15:00:00-03:00"
+  "vazao_m3s": 7442.47,
+  "medicao": "2026-11-26T17:00:00-03:00"
  },
  "serie": [
-  {
-   "t": "2026-10-27T16:00:00-03:00",
-   "v": 13333.0
-  },
   {
    "t": "2026-10-27T17:00:00-03:00",
    "v": 13255.0
@@ -2905,6 +2901,10 @@
   {
    "t": "2026-11-26T16:00:00-03:00",
    "v": 9946.5
+  },
+  {
+   "t": "2026-11-26T17:00:00-03:00",
+   "v": 9919.5
   }
  ]
 }
